@@ -14,27 +14,43 @@
     <script defer src="/__/firebase/8.1.1/firebase-analytics.js"></script>
     <script defer src="/__/firebase/8.1.1/firebase-performance.js"></script>
     <script defer src="/__/firebase/init.js?useEmulator=false"></script>
+    <link rel="stylesheet" href="./css/global.css">
 </head>
 
 <body>
-    <div class="container vh-100 justify-content-center d-flex align-items-center flex-column">
-        <div class="card mt-4 w-75">
-            <div class="card-body text-center">
-                <h1>Login</h1>
-                <form id="formLogin">
-                    <div class="form-group">
-                        <label for="email">Email</label>
-                        <input type="email" class="form-control" id="email">
-                    </div>
-                    <div class="form-group">
-                        <label for="password">Password</label>
-                        <input type="password" class="form-control" id="password">
-                    </div>
-                    <button class="btn btn-primary btn-block">Login</button>
-                </form>
+
+
+    <div class="row">
+        <div class="col-md-8 text-white vh-md-100 vh-25 d-flex judul bg-orange">
+            <div class="container pl-md-4 text-md-left text-center">
+                <h3>Selamat datang di</h3>
+                <h1>Dailycious</h1>
             </div>
         </div>
-        <p>Belum punya akun ? <a href="./Register.html">Register</a></p>
+        <div class="col-md-4 formSection justify-content-center align-items-center">
+            <div class="container mt-4 mt-md-0">
+                <h2 class="text-black font-weight-bold text-center">Login</h2>
+                <div class="card mt-4">
+                    <div class="card-body text-center">
+                        <form id="formLogin">
+                            <div class="form-group">
+                                <label for="email">Email</label>
+                                <input type="email" class="form-control" id="email">
+                            </div>
+                            <div class="form-group">
+                                <label for="password">Password</label>
+                                <input type="password" class="form-control" id="password">
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <a class="font-weight-bold" href="./Register.html">Buat akun</a>
+                                <button class="btn btn-primary">Login</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+        </div>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"

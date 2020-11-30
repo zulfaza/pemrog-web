@@ -14,23 +14,48 @@
   <script defer src="/__/firebase/init.js?useEmulator=false"></script>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
     integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+  <link rel="stylesheet" href="./css/global.css">
 </head>
 
 <body>
-  <div class="container mt-5">
-    <div class="card">
-      <div class="card-body">
-        <form id="formRegis" action="" method="POST">
-          <div class="form-group">
-            <label for="email">Email</label>
-            <input type="email" class="form-control" id="email" name="email">
+  <div class="row">
+    <div class="col-md-8 text-white vh-md-100 vh-25 d-flex judul bg-orange">
+      <div class="container pl-md-4 text-md-left text-center">
+        <h3>Selamat datang di</h3>
+        <h1>Dailycious</h1>
+      </div>
+    </div>
+    <div class="col-md-4 formSection justify-content-center align-items-center">
+      <div class="container mt-4 mt-md-0">
+        <h2 class="text-black font-weight-bold text-center">Buat Akun Baru</h2>
+        <div class="card">
+          <div class="card-body">
+            <form id="formRegis">
+              <div class="form-group">
+                <label for="nama">Nama Pengguna</label>
+                <input type="text" class="form-control" id="nama">
+              </div>
+              <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" class="form-control" id="email" name="email">
+              </div>
+              <div class="form-group">
+                <label for="password">Kata sandi</label>
+                <input type="password" class="form-control" id="password" name="password">
+              </div>
+              <div class="form-group">
+                <label for="ConfirmPassword">Konfirmasi Kata Sandi</label>
+                <input type="password" class="form-control" id="ConfirmPassword" name="password">
+              </div>
+              <div class="d-flex justify-content-between">
+
+                <a class="font-weight-bold" href="./Login.html">Login</a>
+
+                <button class="btn btn-primary">Daftar</button>
+              </div>
+            </form>
           </div>
-          <div class="form-group">
-            <label for="password">Password</label>
-            <input type="password" class="form-control" id="password" name="password">
-          </div>
-          <button class="btn btn-primary">Signup</button>
-        </form>
+        </div>
       </div>
     </div>
   </div>
@@ -46,24 +71,34 @@
   <script>
     document.addEventListener('DOMContentLoaded', function () {
       let app = firebase.app();
-      document.getElementById('formRegis').addEventListener('submit', (e) => {
+      document.getElementById('formRegis').addEventListener('submit', async (e) => {
         e.preventDefault()
         const email = document.getElementById('email').value
         const password = document.getElementById('password').value
-        firebase.auth().createUserWithEmailAndPassword(email, password)
+        const confirmPassword = document.getElementById('ConfirmPassword').value
+        const displayName = document.getElementById('nama').value
+
+        if (password !== confirmPassword) {
+          console.log('Password tidak sama');
+          return;
+        }
+
+        const res = await firebase.auth().createUserWithEmailAndPassword(email, password)
+          .catch(err => {
+            console.log(err);
+          })
+
+        await res.user.updateProfile({
+          displayName: displayName,
+        })
+        const request = {
+          uid: res.user.uid,
+          displayName: displayName
+        }
+
+        return axios.post('http://localhost:5001/final-project-pemrog-web/asia-southeast2/api/regis', request)
           .then(res => {
-
-            const request = {
-              uid: res.user.uid
-            }
-
-            axios.post('http://localhost:5001/final-project-pemrog-web/asia-southeast2/api/regis', request)
-              .then(res => {
-                window.location.href = './dashboard.html'
-              }).catch(err => {
-                console.log(err);
-              })
-
+            return window.location.href = './dashboard.html'
           }).catch(err => {
             console.log(err);
           })
