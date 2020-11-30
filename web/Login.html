@@ -1,80 +1,63 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Hosting</title>
-  <script defer src="/__/firebase/8.1.1/firebase-app.js"></script>
-  <script defer src="/__/firebase/8.1.1/firebase-auth.js"></script>
-  <script defer src="/__/firebase/8.1.1/firebase-firestore.js"></script>
-  <script defer src="/__/firebase/8.1.1/firebase-functions.js"></script>
-  <script defer src="/__/firebase/8.1.1/firebase-analytics.js"></script>
-  <script defer src="/__/firebase/8.1.1/firebase-performance.js"></script>
-  <script defer src="/__/firebase/init.js?useEmulator=false"></script>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
-    integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
+        integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+    <script defer src="/__/firebase/8.1.1/firebase-app.js"></script>
+    <script defer src="/__/firebase/8.1.1/firebase-auth.js"></script>
+    <script defer src="/__/firebase/8.1.1/firebase-firestore.js"></script>
+    <script defer src="/__/firebase/8.1.1/firebase-functions.js"></script>
+    <script defer src="/__/firebase/8.1.1/firebase-analytics.js"></script>
+    <script defer src="/__/firebase/8.1.1/firebase-performance.js"></script>
+    <script defer src="/__/firebase/init.js?useEmulator=false"></script>
 </head>
 
 <body>
-  <div class="container mt-5">
-    <div class="card">
-      <div class="card-body">
-        <form id="formRegis" action="" method="POST">
-          <div class="form-group">
-            <label for="email">Email</label>
-            <input type="email" class="form-control" id="email" name="email">
-          </div>
-          <div class="form-group">
-            <label for="password">Password</label>
-            <input type="password" class="form-control" id="password" name="password">
-          </div>
-          <button class="btn btn-primary">Signup</button>
-        </form>
-      </div>
+    <div class="container vh-100 justify-content-center d-flex align-items-center flex-column">
+        <div class="card mt-4 w-75">
+            <div class="card-body text-center">
+                <h1>Login</h1>
+                <form id="formLogin">
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" class="form-control" id="email">
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" class="form-control" id="password">
+                    </div>
+                    <button class="btn btn-primary btn-block">Login</button>
+                </form>
+            </div>
+        </div>
+        <p>Belum punya akun ? <a href="./Register.html">Register</a></p>
     </div>
-  </div>
-  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
-    integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
-    crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
-    crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.0/axios.min.js"
-    integrity="sha512-DZqqY3PiOvTP9HkjIWgjO6ouCbq+dxqWoJZ/Q+zPYNHmlnI2dQnbJ5bxAHpAMw+LXRm4D72EIRXzvcHQtE8/VQ=="
-    crossorigin="anonymous"></script>
-  <script>
-    document.addEventListener('DOMContentLoaded', function () {
-      let app = firebase.app();
-      document.getElementById('formRegis').addEventListener('submit', (e) => {
-        e.preventDefault()
-        const email = document.getElementById('email').value
-        const password = document.getElementById('password').value
-        firebase.auth().createUserWithEmailAndPassword(email, password)
-          .then(res => {
 
-            const request = {
-              uid: res.user.uid
-            }
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
+        crossorigin="anonymous"></script>
 
-            axios.post('http://localhost:5001/final-project-pemrog-web/asia-southeast2/api/regis', request)
-              .then(res => {
-                window.location.href = './dashboard.html'
-              }).catch(err => {
-                console.log(err);
-              })
+    <script>
+        document.getElementById('formLogin').addEventListener('submit', async (e) => {
+            const email = document.getElementById('email')
 
-          }).catch(err => {
-            console.log(err);
-          })
-      })
-      firebase.auth().onAuthStateChanged(function (user) {
-        if (user) {
-          window.location.href = './dashboard.html'
-        }
-      });
-    });
-  </script>
+            return firebase.auth().signInWithEmailAndPassword(email, password)
+                .then((user) => {
+                    window.location.href = './dashboard.html'
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+        })
+
+    </script>
 </body>
 
 </html>
