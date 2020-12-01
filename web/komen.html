@@ -12,12 +12,22 @@
   <script defer src="/__/firebase/8.1.1/firebase-analytics.js"></script>
   <script defer src="/__/firebase/8.1.1/firebase-performance.js"></script>
   <script defer src="/__/firebase/init.js?useEmulator=false"></script>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
+    integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
 
 </head>
 
 <body>
   <div class="container mt-5">
+
+    <div class="card">
+      <div class="card-body">
+        <code id="isiDoc">
+
+        </code>
+      </div>
+    </div>
+
     <div class="card">
       <div class="card-body">
         <form id="formUpdate">
@@ -31,29 +41,40 @@
     </div>
   </div>
 
-  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+    integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
+    crossorigin="anonymous"></script>
   <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
       const db = firebase.firestore();
+      const KomentarRef = db.collection('resep').doc('idresep').collection('komen');
 
-      firebase.auth().onAuthStateChanged(function(user) {
-        document.getElementById('formUpdate').addEventListener('submit', async (req, res) => {
-          const displayKomen = document.getElementById('newKomen').value;
+      KomentarRef.onSnapshot(res => {
+
+        let finalData = ''
+        res.docs.forEach(doc => {
+          finalData += JSON.stringify(doc.data({ serverTimestamps: 'estimate' }))
+        })
+        if (!res.empty) {
+          document.getElementById('isiDoc').innerHTML = finalData
+        } else {
+          document.getElementById('isiDoc').innerHTML = 'ga ada dokumennya'
+        }
+      })
+
+      firebase.auth().onAuthStateChanged(function (user) {
+        document.getElementById('formUpdate').addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const newKomen = document.getElementById('newKomen').value;
           const dbRef = db.collection('resep').doc('idresep').collection('komen').add({
-            komen: 'tahukotak',
-            uid_sender: 'fdsfgsgfsdgrrew',
+            komen: newKomen,
+            uid_sender: user.uid,
           }).then(() => {
             return res.json({})
           })
-
-          // docRef.onSnapshot(res => {
-          //     if (res.exists) {
-          //         document.getElementById('isiDoc').innerHTML = JSON.stringify(res.data({ serverTimestamps: 'estimate' }))
-          //     } else {
-          //         document.getElementById('isiDoc').innerHTML = 'ga ada dokumennya'
-          //     }
-          // })
         });
 
       })

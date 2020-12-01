@@ -62,8 +62,9 @@
 
     <script>
         document.getElementById('formLogin').addEventListener('submit', async (e) => {
-            const email = document.getElementById('email')
-
+            e.preventDefault()
+            const email = document.getElementById('email').value
+            const password = document.getElementById('password').value
             return firebase.auth().signInWithEmailAndPassword(email, password)
                 .then((user) => {
                     window.location.href = './dashboard.html'
