@@ -71,8 +71,10 @@
   <script>
     document.addEventListener('DOMContentLoaded', function () {
       let app = firebase.app();
+      let OnRegis = false
       document.getElementById('formRegis').addEventListener('submit', async (e) => {
         e.preventDefault()
+        OnRegis = true;
         const email = document.getElementById('email').value
         const password = document.getElementById('password').value
         const confirmPassword = document.getElementById('ConfirmPassword').value
@@ -86,8 +88,8 @@
         const res = await firebase.auth().createUserWithEmailAndPassword(email, password)
           .catch(err => {
             console.log(err);
+            return;
           })
-
         await res.user.updateProfile({
           displayName: displayName,
         })
@@ -96,15 +98,14 @@
           displayName: displayName
         }
 
-        return axios.post('http://localhost:5001/final-project-pemrog-web/asia-southeast2/api/regis', request)
-          .then(res => {
-            return window.location.href = './dashboard.html'
-          }).catch(err => {
+        await axios.post('http://localhost:5001/final-project-pemrog-web/asia-southeast2/api/regis', request)
+          .catch(err => {
             console.log(err);
           })
+        return window.location.href = './dashboard.html'
       })
       firebase.auth().onAuthStateChanged(function (user) {
-        if (user) {
+        if (user && !OnRegis) {
           window.location.href = './dashboard.html'
         }
       });
