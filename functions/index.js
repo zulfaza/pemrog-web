@@ -9,13 +9,17 @@ const db = admin.firestore();
 
 app.post("/regis", async (req, res) => {
   const { uid, displayName } = req.body;
-
+  if (!uid || !displayName) {
+    console.log("params ga lengkap");
+    return res.status(400).json({ pesan: "Params ga lengkap" });
+  }
   return await db
     .collection("Users")
     .doc(uid)
     .set({
       displayName: displayName,
       ListResep: [],
+      listCookLater: [],
       uid: uid,
     })
     .then(() => {
