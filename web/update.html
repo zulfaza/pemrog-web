@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Update Profile</title>
     <script defer src="/__/firebase/8.1.1/firebase-app.js"></script>
     <script defer src="/__/firebase/8.1.1/firebase-auth.js"></script>
     <script defer src="/__/firebase/8.1.1/firebase-firestore.js"></script>
@@ -20,6 +20,7 @@
         height: 200px;
       }
     </style>
+      <link href="css/global.css" rel="stylesheet">
 </head>
 
 <body>
@@ -45,10 +46,8 @@
          </ul>
          <ul class="navbar-nav">
            <li class="nav-item">
-             <a href="#" class="nav-link">Login</a>
-           </li>
-           <li class="nav-item">
-             <a href="#" class="nav-link">Register</a>
+             <!-- <a href='./Login.html' id='logout' class="nav-link">Logout</a> -->
+             <button id='logout' type="button" class="btn btn-light btn-sm" >Logout</button>
            </li>
          </ul>
        </div>
@@ -172,6 +171,8 @@
                         bio:bio
                     }).then(() => {
                         document.getElementById('auth').innerHTML = `<div class="alert alert-success" role="alert">success</div>`;
+                    }).then(()=>{
+                        return window.location.href = './dashboard.html';
                     }).catch(err => {
                           document.getElementById('auth').innerHTML = `<div class="alert alert-danger" role="alert">failed</div>`;
                     })
@@ -179,6 +180,15 @@
                     });
 
             })
+
+        })
+
+        document.getElementById('logout').addEventListener('click', () => {
+            return firebase.auth().signOut().then(function () {
+                window.location.href = './Login.html'
+            }).catch(function (error) {
+                console.log(error);
+            });
 
         })
     </script>
