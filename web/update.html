@@ -170,9 +170,9 @@
                         displayName: displayName,
                         bio:bio
                     }).then(() => {
-                        document.getElementById('auth').innerHTML = `<div class="alert alert-success" role="alert">success</div>`;
-                    }).then(()=>{
+                      //  document.getElementById('auth').innerHTML = `<div class="alert alert-success" role="alert">success</div>`;
                         return window.location.href = './dashboard.html';
+
                     }).catch(err => {
                           document.getElementById('auth').innerHTML = `<div class="alert alert-danger" role="alert">failed</div>`;
                     })
