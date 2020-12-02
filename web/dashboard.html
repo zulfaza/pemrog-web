@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
+    <!-- Firebase -->
     <script defer src="/__/firebase/8.1.1/firebase-app.js"></script>
     <script defer src="/__/firebase/8.1.1/firebase-auth.js"></script>
     <script defer src="/__/firebase/8.1.1/firebase-firestore.js"></script>
@@ -12,15 +13,71 @@
     <script defer src="/__/firebase/8.1.1/firebase-analytics.js"></script>
     <script defer src="/__/firebase/8.1.1/firebase-performance.js"></script>
     <script defer src="/__/firebase/init.js?useEmulator=false"></script>
+    <!-- Bootstrap -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
         integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+    <!-- Font -->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap" rel="stylesheet">>
+    <script src="https://kit.fontawesome.com/cb61666d8f.js" crossorigin="anonymous"></script>
+    <!-- Css -->
+    <link rel="stylesheet" href="./css/global.css">
+    <link rel="stylesheet" href="./css/dashboard.css">
 </head>
 
 <body>
-    <div class="container">
-        <h1>Dashboard</h1>
-        <a class="btn btn-primary" href="./BuatResep.html">Buat resep</a>
-        <button class="btn btn-info" id="logout">Logout</button>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light navbar-orange">
+        <div class="container">
+            <a class="navbar-brand font-weight-bold" href="#">dailycious</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="./search.html">
+                            <span class="fas fa-search"></span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <button class="btn nav-link" id="logout">
+                            <span class="fas fa-sign-out-alt"></span>
+                        </button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-3">
+        <section class="myResep">
+            <h2 class="font-weight-bold">Resepmu</h2>
+            <div class="mt-3" id="MyResepWrapper">
+                <a class="btn text-orange" href="./BuatResep.html">
+                    <span class="fas fa-plus-circle"></span> Tulis Resep
+                </a>
+                <div id="listMyResep">
+                    <div class="spinner-border" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="Cooklater mt-3">
+            <h2 class="font-weight-bold">Resep Tersimpan</h2>
+            <div class="mt-3" id="CooklaterResepWrapper">
+                <div class="spinner-border" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+            </div>
+        </section>
     </div>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
         integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
@@ -29,14 +86,70 @@
         integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
         crossorigin="anonymous"></script>
     <script>
-        document.getElementById('logout').addEventListener('click', () => {
-            return firebase.auth().signOut().then(function () {
-                window.location.href = './Login.html'
-            }).catch(function (error) {
-                console.log(error);
-            });
+        document.addEventListener('DOMContentLoaded', function () {
+            const db = firebase.firestore()
 
-        })
+            document.getElementById('logout').addEventListener('click', (e) => {
+                e.preventDefault();
+                return firebase.auth().signOut().then(function () {
+                    window.location.href = './Login.html'
+                }).catch(function (error) {
+                    console.log(error);
+                });
+
+            })
+            firebase.auth().onAuthStateChanged(async function (user) {
+                if (!user) {
+                    window.location.href = './Login.html';
+                    return;
+                }
+                // Get List of resep
+                const listDocs = await db.collection("resep").get()
+                const DataUser = await db.collection('Users').doc(user.uid).get()
+                let listCardsMyResep = ''
+                let listCardsCookLater = ''
+                listDocs.docs.forEach(doc => {
+                    const data = doc.data()
+                    if (DataUser.data().ListResep.includes(doc.id)) {
+                        listCardsMyResep += `
+                        <div class="card" style="width: 18rem;">
+                            <svg class="bd-placeholder-img card-img-top" width="100%" height="180" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: Image cap"><title>Placeholder</title><rect width="100%" height="100%" fill="#868e96"></rect><text x="50%" y="50%" fill="#dee2e6" dy=".3em">Image cap</text></svg>
+                            <div class="card-body">
+                                <h5 class="card-title">${data.judul}</h5>
+                                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                                <a href="#" class="btn btn-primary">Go somewhere</a>
+                            </div>
+                        </div>`
+                    }
+                    if (DataUser.data().listCookLater.includes(doc.id)) {
+                        listCardsCookLater += `
+                        <div class="card" style="width: 18rem;">
+                            <svg class="bd-placeholder-img card-img-top" width="100%" height="180" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: Image cap"><title>Placeholder</title><rect width="100%" height="100%" fill="#868e96"></rect><text x="50%" y="50%" fill="#dee2e6" dy=".3em">Image cap</text></svg>
+                            <div class="card-body">
+                                <h5 class="card-title">${data.judul}</h5>
+                                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                                <a href="#" class="btn btn-primary">Go somewhere</a>
+                            </div>
+                        </div>
+                        `
+                    }
+                })
+                document.getElementById('listMyResep').innerHTML = listCardsMyResep
+                if (listCardsCookLater === '') {
+                    document.getElementById('CooklaterResepWrapper').innerHTML = `
+                    <br>
+                    <div class="text-center">
+                        <h4>Tidak ada resep yang kamu simpan</h4>
+                        <a class="btn text-orange" href="./BuatResep.html">
+                            <span class="fas fa-search"></span> Cari Resep
+                        </a>
+                    </div>
+                    `
+                } else {
+                    document.getElementById('CooklaterResepWrapper').innerHTML = listCardsCookLater
+                }
+            });
+        });
     </script>
 </body>
 

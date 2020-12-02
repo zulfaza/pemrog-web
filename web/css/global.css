@@ -4,8 +4,16 @@
 }
 
 body {
-  background: var(--yellow);
-  overflow-x: hidden;
+  font-family: "Montserrat", sans-serif;
+}
+
+.navbar-orange .navbar-brand,
+.navbar-orange .navbar-nav .nav-link {
+  color: var(--orange);
+}
+
+.text-orange {
+  color: var(--orange);
 }
 
 .bg-orange {
@@ -22,55 +30,6 @@ h1 {
   font-weight: bold;
 }
 
-.judul {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.formSection {
-  display: flex;
-  height: 100%;
-}
-
-.card {
-  border-radius: 20px;
-  background: #ede0e0;
-}
-
 label {
   font-weight: bold;
-}
-
-@media (min-width: 576px) {
-  h3 {
-    font-size: 2rem;
-  }
-  h1 {
-    font-size: 3.5rem;
-  }
-}
-
-@media (min-width: 768px) {
-  .vh-md-100 {
-    height: 100vh !important;
-  }
-  .h1 {
-    font-size: 4.5rem;
-  }
-  .judul {
-    display: block;
-  }
-  .formSection {
-    height: 100vh;
-  }
-}
-
-@media (min-width: 992px) {
-  h1 {
-    font-size: 5rem;
-  }
-}
-
-@media (min-width: 1200px) {
 }
