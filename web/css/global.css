@@ -6,7 +6,11 @@
 body {
   font-family: "Montserrat", sans-serif;
 }
-
+.btn-orange {
+  color: #fff;
+  background-color: var(--orange);
+  border-color: var(--orange);
+}
 .navbar-orange .navbar-brand,
 .navbar-orange .navbar-nav .nav-link {
   color: var(--orange);

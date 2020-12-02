@@ -1,0 +1,21 @@
+.card {
+  background: #fdf6f0;
+  border: 5px solid #000000;
+  border-radius: 20px;
+}
+.form-control {
+  border-color: black;
+}
+.custom-file-label {
+  border-color: black;
+}
+.custom-file-label::after {
+  background-color: var(--orange);
+  color: white;
+}
+.ThumbnailPreview {
+  overflow: hidden;
+  border-radius: 20px;
+  width: fit-content;
+  max-width: 600px;
+}
