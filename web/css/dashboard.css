@@ -1,3 +1,20 @@
 body {
   background: white;
 }
+
+.card {
+  background-color: var(--orange);
+  border-radius: 20px;
+  border: none;
+  color: white;
+  text-align: center;
+}
+
+.card .imgThumb {
+  border-radius: 20px;
+  overflow: hidden;
+}
+.btnWrapper a {
+  font-size: 24px;
+  color: white;
+}
