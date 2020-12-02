@@ -32,6 +32,9 @@
     <div class="col-md-4 formSection justify-content-center align-items-center">
       <div class="container mt-4 mt-md-0">
         <h2 class="text-black font-weight-bold text-center">Buat Akun Baru</h2>
+        <div class="my-3 d-none" id="alertWrapper">
+
+        </div>
         <div class="card">
           <div class="card-body">
             <form id="formRegis">
@@ -55,7 +58,7 @@
 
                 <a class="font-weight-bold" href="./Login.html">Login</a>
 
-                <button class="btn btn-primary">Daftar</button>
+                <button class="btn btn-primary" id="btnDaftar">Daftar</button>
               </div>
             </form>
           </div>
@@ -76,9 +79,37 @@
     document.addEventListener('DOMContentLoaded', function () {
       let app = firebase.app();
       let OnRegis = false
+
+      function setLoading(status) {
+        const btnDaftar = document.getElementById('btnDaftar')
+        if (status) {
+          btnDaftar.setAttribute('disabled', 'true')
+          btnDaftar.innerHTML = `<div class="spinner-border spinner-border-sm mr-2" role="status"></div>Loading..`
+        }
+        else {
+          btnDaftar.removeAttribute('disabled')
+          btnDaftar.innerHTML = 'Daftar'
+        }
+      }
+      function setError(show, message = '') {
+        const AlertWrapper = document.getElementById('alertWrapper')
+        if (show) {
+          AlertWrapper.classList.remove('d-none')
+          AlertWrapper.innerHTML = `
+          <div class="alert alert-danger" role="alert">
+           ${message}
+          </div>
+          `
+        } else {
+          AlertWrapper.classList.add('d-none')
+        }
+
+      }
       document.getElementById('formRegis').addEventListener('submit', async (e) => {
         e.preventDefault()
         OnRegis = true;
+        setLoading(true)
+        setError(false)
         const email = document.getElementById('email').value
         const password = document.getElementById('password').value
         const confirmPassword = document.getElementById('ConfirmPassword').value
@@ -86,14 +117,21 @@
 
         if (password !== confirmPassword) {
           console.log('Password tidak sama');
+          setLoading(false)
+          setError(true, 'Password tidak sama')
           return;
         }
 
         const res = await firebase.auth().createUserWithEmailAndPassword(email, password)
           .catch(err => {
             console.log(err);
+            setLoading(false)
+            setError(true, err.message)
             return;
           })
+        if (!res) {
+          return;
+        }
         await res.user.updateProfile({
           displayName: displayName,
         })
@@ -105,6 +143,8 @@
         await axios.post('http://localhost:5001/final-project-pemrog-web/asia-southeast2/api/regis', request)
           .catch(err => {
             console.log(err);
+            setLoading(false)
+            setError(true, err.message)
           })
         return window.location.href = './dashboard.html'
       })
