@@ -117,9 +117,10 @@
                 }
                 return newString
             }
-            function StrukturCardResep(data, additionalClass = []) {
+            function StrukturCardResep(data, additionalClass = [], additionalData = {}) {
                 let newClass = ''
                 let thumb = ''
+                const { tipe, docid } = additionalData
                 additionalClass.forEach(data => {
                     newClass += data + " "
                 })
@@ -127,7 +128,7 @@
                     thumb = `<img src=${data.thumbnail} alt="${data.judul}" class="img-fluid">`
                 } else {
                     thumb = `
-                    <svg class="bd-placeholder-img card-img-top" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: Image cap">
+                    <svg class="bd-placeholder-img card-img-top" width="100%" height="248px" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: Image cap">
                                         <title>${data.judul}</title>
                                         <rect width="100%" height="100%" fill="#C4C4C4"></rect>
                                     </svg>
@@ -142,7 +143,7 @@
                                 <div class="btnWrapper">
                                     <a href="#" class="btn"><span class="far fa-comment"></span></a>
                                     <a href="#" class="btn"><span class="far fa-edit"></span></a>
-                                    <a href="#" class="btn"><span class="far fa-trash-alt"></span></a>
+                                    <button type="button" class="btn btn-hapus text-white" data-id=${docid} data-tipe=${tipe}><span class="far fa-trash-alt" data-id=${docid} data-tipe=${tipe}></span></button>
                                 </div>
                             </div>
                         </div>`
@@ -153,27 +154,32 @@
                     return;
                 }
                 // Get List of resep
-                const listDocs = await db.collection("resep").get()
-                const DataUser = (await db.collection('Users').doc(user.uid).get()).data()
-                let listCardsMyResep = ''
-                let listCardsCookLater = ''
-                let additionalClass = []
+                await db.collection("resep").onSnapshot(async (listDocs) => {
 
-                if (DataUser.ListResep.length < 3) {
-                    additionalClass.push('mr-3')
-                    document.getElementById('listMyResep').classList.remove('justify-content-around')
-                }
-                listDocs.docs.forEach(doc => {
-                    const data = doc.data()
-                    if (DataUser.ListResep.includes(doc.id)) {
-                        listCardsMyResep += StrukturCardResep(data, additionalClass)
+                    const DataUser = (await db.collection('Users').doc(user.uid).get()).data()
+                    let listCardsMyResep = ''
+                    let listCardsCookLater = ''
+                    let additionalClass = []
+
+                    if (DataUser.ListResep.length < 3) {
+                        additionalClass.push('mr-3')
+                        document.getElementById('listMyResep').classList.remove('justify-content-around')
                     }
-                    if (DataUser.listCookLater.includes(doc.id)) {
-                        listCardsCookLater += StrukturCardResep(data, additionalClass)
-                    }
-                })
-                if (listCardsMyResep === '') {
-                    document.getElementById('listMyResep').innerHTML = `
+                    listDocs.docs.forEach(doc => {
+                        const data = doc.data()
+                        let additionalData = {}
+                        additionalData.docid = doc.id
+                        if (DataUser.ListResep.includes(doc.id)) {
+                            additionalData.tipe = 'ListResep'
+                            listCardsMyResep += StrukturCardResep(data, additionalClass, additionalData)
+                        }
+                        if (DataUser.listCookLater.includes(doc.id)) {
+                            additionalData.tipe = 'listCookLater'
+                            listCardsCookLater += StrukturCardResep(data, additionalClass, additionalData)
+                        }
+                    })
+                    if (listCardsMyResep === '') {
+                        document.getElementById('listMyResep').innerHTML = `
                     <br>
                     <div class="text-center">
                         <h4>Tidak ada resep yang kamu simpan</h4>
@@ -182,13 +188,13 @@
                     </a>
                     </div>
                     `
-                } else {
-                    document.getElementById('listMyResep').innerHTML = listCardsMyResep
-                }
+                    } else {
+                        document.getElementById('listMyResep').innerHTML = listCardsMyResep
+                    }
 
 
-                if (listCardsCookLater === '') {
-                    document.getElementById('CooklaterResepWrapper').innerHTML = `
+                    if (listCardsCookLater === '') {
+                        document.getElementById('CooklaterResepWrapper').innerHTML = `
                     <br>
                     <div class="text-center">
                         <h4>Tidak ada resep yang kamu simpan</h4>
@@ -197,9 +203,32 @@
                         </a>
                     </div>
                     `
-                } else {
-                    document.getElementById('CooklaterResepWrapper').innerHTML = listCardsCookLater
-                }
+                    } else {
+                        document.getElementById('CooklaterResepWrapper').innerHTML = listCardsCookLater
+                    }
+                    $('.btn-hapus').click(async (e) => {
+                        const { id, tipe } = e.target.dataset
+                        const Loading = `<div class="spinner-border spinner-border-md mr-2 text-white" role="status"></div>`
+                        if (e.target.localName === 'span')
+                            e.target.parentNode.innerHTML = Loading
+                        else {
+                            e.target.innerHTML = Loading
+                        }
+                        await db.collection('resep').doc(id).delete().catch(err => {
+                            console.log(err);
+                        })
+                        if (tipe === 'ListResep') {
+                            await db.collection('Users').doc(user.uid).update({
+                                ListResep: firebase.firestore.FieldValue.arrayRemove(id)
+                            })
+                        } else if (tipe === 'listCookLater') {
+                            await db.collection('Users').doc(user.uid).update({
+                                listCookLater: firebase.firestore.FieldValue.arrayRemove(id)
+                            })
+                        }
+                    })
+                })
+
             });
         });
     </script>

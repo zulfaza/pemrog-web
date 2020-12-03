@@ -13,9 +13,16 @@ body {
 .card .imgThumb {
   border-radius: 20px;
   overflow: hidden;
+  height: 248px;
 }
 .btnWrapper a {
   font-size: 24px;
   color: white;
-  height: 248px;
+}
+.btn.btn-hapus {
+  font-size: 22px;
+}
+
+.btn.btn-hapus:focus {
+  box-shadow: none;
 }
