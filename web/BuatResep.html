@@ -9,6 +9,7 @@
     <script defer src="/__/firebase/8.1.1/firebase-app.js"></script>
     <script defer src="/__/firebase/8.1.1/firebase-auth.js"></script>
     <script defer src="/__/firebase/8.1.1/firebase-firestore.js"></script>
+    <script defer src="/__/firebase/8.1.1/firebase-storage.js"></script>
     <script defer src="/__/firebase/8.1.1/firebase-analytics.js"></script>
     <script defer src="/__/firebase/8.1.1/firebase-performance.js"></script>
     <script defer src="/__/firebase/init.js?useEmulator=false"></script>
@@ -40,19 +41,22 @@
                 </ul>
                 <ul class="navbar-nav">
                     <li class="nav-item">
-                        <a href="./dashboard.html" class="nav-link" alt="Profile">
-                            <span class="fas fa-user-alt"></span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
                         <a class="nav-link" href="./search.html" alt='search'>
                             <span class="fas fa-search"></span>
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <button class="btn nav-link" id="logout">
-                            <span class="fas fa-sign-out-alt"></span>
-                        </button>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <span class="fas fa-cog"></span>
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                            <a class="dropdown-item" href="./dashboard.html">Dashboard</a>
+                            <a class="dropdown-item" href="./update.html">Update Profile</a>
+                            <button class="btn dropdown-item" id="logout">
+                                Signout
+                            </button>
+                        </div>
                     </li>
                 </ul>
             </div>
@@ -67,15 +71,15 @@
 
                     <div class="d-flex justify-content-center my-4">
                         <div class="ThumbnailPreview" id="thumbnailpreview">
-                            <img src="./img/Group 25.png" alt="" class="img-fluid">
+                            <img id="thumbPic" src="./img/Group 25.png" alt="">
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="">Thumbnail</label>
                         <div class="custom-file">
-                            <input type="file" class="custom-file-input" id="customFile">
-                            <label class="custom-file-label" for="customFile">Choose file</label>
+                            <input type="file" class="custom-file-input" id="Thumbnail" accept=".jpg,.png">
+                            <label class="custom-file-label" for="Thumbnail" id="labelThumb">Choose file</label>
                         </div>
                     </div>
                     <div class="form-group">
@@ -84,19 +88,19 @@
                     </div>
                     <div class="form-group">
                         <label for="deskripsi">Deskripsi</label>
-                        <textarea type="text" class="form-control"></textarea>
+                        <textarea type="text" class="form-control" id="deskripsi"></textarea>
                     </div>
-                    <div class="form-group">
-                        <label for="bahan">Bahan-bahan</label>
-                        <input type="text" class="form-control" id="bahan">
+                    <div id="bahanWrapper">
+
                     </div>
-                    <div class="form-group">
+                    <button type="button" class="btn btn-orange" id="BtnTambahSoal">Tambah bahan</button>
+                    <div class="form-group mt-3">
                         <label for="step">Step</label>
                         <textarea class="form-control" name="" id="step" cols="30" rows="10"></textarea>
                     </div>
                     <div class="d-flex justify-content-center">
                         <button class="btn btn-secondary mr-4" id="cancelBtn">Cancel</button>
-                        <button class="btn btn-orange">Post</button>
+                        <button class="btn btn-orange" id="btnSubmit">Post</button>
                     </div>
                 </form>
             </div>
@@ -113,6 +117,103 @@
         referrerpolicy="origin"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
+            let bahan = ['']
+            let jmlBahan = ['']
+            UpdateBahan()
+            function AddBahan() {
+                bahan.push('')
+                jmlBahan.push('')
+                UpdateBahan()
+            }
+            function DeleteBahan(index) {
+                bahan.splice(index, index)
+                jmlBahan.splice(index, index)
+                UpdateBahan()
+            }
+            function UpdateBahan() {
+                let listBahan = ''
+                bahan.forEach((data, i) => {
+                    if (i !== 0) {
+                        listBahan += `
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="bahan">Nama Bahan ke-${i + 1}</label>
+                                    <input type="text" class="form-control" id="namaBahan_${i}" data-index=${i} value="${bahan[i]}"">
+                                </div>
+                            </div>
+                            <div class="col-md-6 row">
+                                <div class="col-10">
+                                <div class="form-group">
+                                    <label for="bahan">jumlah Bahan ke-${i + 1}</label>
+                                    <input type="text" class="form-control" id="jmlBahan_${i}" data-index=${i} value="${jmlBahan[i]}"">
+                                </div>
+                                </div>
+                                <div class="col-2">
+                                <button class="btn btn-orange" id="BtnHapus_${i}" data-index=${i}>X</button>
+                                </div>
+                            </div>
+                            
+                        </div>
+                    `;
+                    } else {
+                        listBahan += `
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="bahan">Nama Bahan ke-${i + 1}</label>
+                                    <input type="text" class="form-control" id="namaBahan_${i}" data-index=${i} value="${bahan[i]}"">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="bahan">jumlah Bahan ke-${i + 1}</label>
+                                    <input type="text" class="form-control" id="jmlBahan_${i}" data-index=${i} value="${jmlBahan[i]}"">
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    }
+                })
+
+                document.getElementById('bahanWrapper').innerHTML = listBahan
+                bahan.forEach((data, i) => {
+
+                    document.getElementById(`jmlBahan_${i}`).addEventListener('change', e => {
+                        const { index } = e.target.dataset
+                        jmlBahan[index] = e.target.value
+                        console.log(jmlBahan);
+                    })
+                    document.getElementById(`jmlBahan_${i}`).addEventListener('keydown', (e) => {
+                        if (e.keyCode === 13) {
+                            e.preventDefault()
+                            AddBahan()
+                        }
+                    })
+                    document.getElementById(`namaBahan_${i}`).addEventListener('change', (e) => {
+                        const { index } = e.target.dataset
+                        bahan[index] = e.target.value
+                        console.log(bahan);
+                    })
+                    document.getElementById(`namaBahan_${i}`).addEventListener('keydown', (e) => {
+                        if (e.keyCode === 13) {
+                            e.preventDefault()
+                            AddBahan()
+                        }
+                    })
+                    if (i !== 0) {
+                        document.getElementById(`BtnHapus_${i}`).addEventListener('click', (e) => {
+                            const { index } = e.target.dataset
+                            DeleteBahan(index)
+                        })
+                    }
+                })
+            }
+
+
+            document.getElementById('BtnTambahSoal').addEventListener('click', () => {
+                AddBahan()
+            })
 
             tinymce.init({
                 selector: 'textarea',
@@ -124,17 +225,68 @@
             document.getElementById('cancelBtn').addEventListener('click', () => {
                 window.location.href = './dashboard.html';
             })
+
+            document.getElementById('Thumbnail').addEventListener('change', (e) => {
+                const label = document.getElementById('labelThumb')
+                const file = e.target.files[0]
+                const extentiion = file.name.split('.').pop().toLowerCase()
+                const acceptAbleExtention = ['jpg', 'jpeg', 'png']
+                if (e.target.files.length > 0 && acceptAbleExtention.includes(extentiion)) {
+                    const nameLength = 50
+                    if (file.name.length > nameLength) {
+                        label.textContent = file.name.substring(0, nameLength - 3) + "..."
+                    } else {
+                        label.textContent = file.name
+                    }
+                    const reader = new FileReader();
+
+                    reader.onload = function (e) {
+                        document.getElementById('thumbPic').src = e.target.result
+                    }
+                    reader.readAsDataURL(file);
+
+                } else {
+                    label.textContent = 'Choose file'
+                }
+            })
+
             firebase.auth().onAuthStateChanged(function (user) {
                 if (!user) {
                     window.location.href = './login.html'
                 }
+
+                function SetLoading(status) {
+                    const BtnSubmit = document.getElementById('btnSubmit')
+                    if (status) {
+                        BtnSubmit.setAttribute('disabled', '')
+                        BtnSubmit.innerHTML = `<div class="spinner-border spinner-border-sm mr-2" role="status"></div>Loading..`
+                    } else {
+                        BtnSubmit.removeAttribute('disabled')
+                        BtnSubmit.innerHTML = 'Post'
+                    }
+                }
+
                 document.getElementById('formResep').addEventListener('submit', async (e) => {
                     e.preventDefault()
-                    const bahans = document.getElementById('bahan').value.replace(/\s/gi, '').split(',')
+                    SetLoading(true)
+                    const steps = document.getElementById('step').value
+                    const deskripsi = document.getElementById('deskripsi').value
+                    const thumbnail = document.getElementById('Thumbnail').files[0]
                     const body = document.getElementById('step').value
                     const judul = document.getElementById('judul').value
-                    return await db.collection('resep').add({
-                        bahan: bahans,
+                    let url = ''
+
+                    if (document.getElementById('Thumbnail').files.length > 0) {
+                        const storageRef = firebase.storage().ref('ThumbnailResep').child(thumbnail.name);
+                        await storageRef.put(thumbnail)
+                        url = await storageRef.getDownloadURL()
+                    }
+
+                    const resSubmitResep = await db.collection('resep').add({
+                        thumbnail: url,
+                        deskripsi: deskripsi,
+                        bahan: bahan,
+                        jmlBahan: jmlBahan,
                         body: body,
                         cookLaterCount: 0,
                         judul: judul,
@@ -142,13 +294,22 @@
                         pembuatResep: user.uid,
                         likedBy: [],
                         timestamp: firebase.firestore.FieldValue.serverTimestamp()
-                    }).then((res) => {
-                        console.log(res);
-                        window.location.href = './dashboard.html'
                     }).catch((err) => {
                         console.log(err);
+                        SetLoading(false)
                         return;
                     });
+
+                    if (resSubmitResep) {
+                        return await db.collection('Users').doc(user.uid).update({
+                            ListResep: firebase.firestore.FieldValue.arrayUnion(resSubmitResep.id)
+                        }).then(() => {
+                            window.location.href = "./dashboard.html"
+                        }).catch(err => {
+                            console.log(err);
+                            SetLoading(false)
+                        })
+                    }
                 })
             });
         })
