@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Buat resep</title>
+    <title>Edit resep</title>
     <!-- Firebase -->
     <script defer src="/__/firebase/8.1.1/firebase-app.js"></script>
     <script defer src="/__/firebase/8.1.1/firebase-auth.js"></script>
@@ -275,9 +275,6 @@
                     const thumbnail = document.getElementById('Thumbnail').files[0]
                     const body = document.getElementById('step').value
                     const judul = document.getElementById('judul').value
-                    let dataPembuat = {}
-                    dataPembuat.uid = user.uid
-                    dataPembuat.nama = user.displayName
                     let url = ''
 
                     if (document.getElementById('Thumbnail').files.length > 0) {
@@ -287,7 +284,6 @@
                     }
 
                     const resSubmitResep = await db.collection('resep').add({
-                        slug: judul.replace(' ', '-'),
                         thumbnail: url,
                         deskripsi: deskripsi,
                         bahan: bahan,
@@ -296,7 +292,7 @@
                         cookLaterCount: 0,
                         judul: judul,
                         komenCount: 0,
-                        pembuatResep: dataPembuat,
+                        pembuatResep: user.uid,
                         likedBy: [],
                         timestamp: firebase.firestore.FieldValue.serverTimestamp()
                     }).catch((err) => {
