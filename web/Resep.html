@@ -83,9 +83,9 @@
         let isAdmin = false
         if (user) {
           const claims = (await user.getIdTokenResult()).claims
-          isAdmin = claims.admin
+          isAdmin = claims.admin ?? false
           dropdownWrapper.innerHTML = `
-            < a class="dropdown-item" href = "./dashboard.html" > Dashboard</a >
+            <a class="dropdown-item" href = "./dashboard.html" >Dashboard</a >
             <a class="dropdown-item" href="./update.html">Update Profile</a>
             <button class="btn dropdown-item" id="logout">
                 Signout

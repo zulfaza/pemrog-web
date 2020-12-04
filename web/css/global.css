@@ -13,6 +13,11 @@ body {
   background-color: var(--orange);
   border-color: var(--orange);
 }
+.btn-yellow {
+  color: black;
+  background-color: var(--yellow);
+  border-color: var(--yellow);
+}
 .btn-black {
   color: #fff;
   background-color: black;
@@ -43,4 +48,11 @@ h1 {
 
 label {
   font-weight: bold;
+}
+.bg-yellow {
+  background: var(--yellow);
+}
+
+.bg-transparant {
+  background: transparent !important;
 }

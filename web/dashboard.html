@@ -140,8 +140,8 @@
                                 </div>
                                 <h5 class="card-title">${data.judul}</h5>
                                 <div class="btnWrapper">    
-                                    <a href="./resep.html?resep=${data.slug}" class="btn" target="_blank" rel="noopener noreferrer"><span class="far fa-comment"></span></a>
-                                    <a href="#" class="btn"><span class="far fa-edit"></span></a>
+                                    <a href="./resep.html?resep=${data.judul.replace(' ', '-')}" class="btn" target="_blank" rel="noopener noreferrer"><span class="far fa-comment"></span></a>
+                                    <a href="./editResep.html?resep=${data.judul.replace(' ', '-')}" class="btn"><span class="far fa-edit"></span></a>
                                     <button type="button" class="btn btn-hapus text-white" data-id=${docid} data-tipe=${tipe}><span class="far fa-trash-alt" data-id=${docid} data-tipe=${tipe}></span></button>
                                 </div>
                             </div>

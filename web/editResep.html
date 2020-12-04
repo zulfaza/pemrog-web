@@ -118,6 +118,7 @@
         referrerpolicy="origin"></script>
     <script>
         document.addEventListener('DOMContentLoaded', async function () {
+
             const params = new URLSearchParams(window.location.search)
             const slug = params.get('resep')
             const steps = document.getElementById('step')
@@ -133,6 +134,7 @@
             const resepRef = db.collection("resep").where("judul", "==", slug.replace('-', ' '))
             const resQuery = await resepRef.limit(1).get()
             const res = resQuery.docs[0]
+
             if (!resQuery.empty) {
                 const data = res.data()
                 steps.value = data.body
@@ -144,17 +146,21 @@
                 url = data.thumbnail
                 UpdateBahan()
             }
+
             UpdateBahan()
+
             function AddBahan() {
                 bahan.push('')
                 jmlBahan.push('')
                 UpdateBahan()
             }
+
             function DeleteBahan(index) {
                 bahan.splice(index, index)
                 jmlBahan.splice(index, index)
                 UpdateBahan()
             }
+
             function UpdateBahan() {
                 let listBahan = ''
                 bahan.forEach((data, i) => {
@@ -247,7 +253,8 @@
             });
 
 
-            document.getElementById('cancelBtn').addEventListener('click', () => {
+            document.getElementById('cancelBtn').addEventListener('click', (e) => {
+                e.preventDefault()
                 window.location.href = './dashboard.html';
             })
 
