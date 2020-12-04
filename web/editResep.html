@@ -67,7 +67,7 @@
     <div class="container my-5">
         <div class="card">
             <div class="card-body">
-                <h1 class="text-orange font-weight-bold text-center">Buat Resepmu</h1>
+                <h1 class="text-orange font-weight-bold text-center">Edit Resepmu</h1>
                 <form id="formResep">
 
                     <div class="d-flex justify-content-center my-4">
@@ -94,7 +94,7 @@
                     <div id="bahanWrapper">
 
                     </div>
-                    <button type="button" class="btn btn-orange" id="BtnTambahSoal">Tambah bahan</button>
+                    <button type="button" class="btn btn-orange" id="BtnTambahBahan">Tambah bahan</button>
                     <div class="form-group mt-3">
                         <label for="step">Step</label>
                         <textarea class="form-control" name="" id="step" cols="30" rows="10"></textarea>
@@ -117,9 +117,33 @@
     <script src="https://cdn.tiny.cloud/1/emahnh5u9va59zls67qf1ue25ridax44s0sr7kiowxxsuis0/tinymce/5/tinymce.min.js"
         referrerpolicy="origin"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', async function () {
+            const params = new URLSearchParams(window.location.search)
+            const slug = params.get('resep')
+            const steps = document.getElementById('step')
+            const deskripsi = document.getElementById('deskripsi')
+            const thumbnail = document.getElementById('Thumbnail')
+            const body = document.getElementById('step')
+            const judul = document.getElementById('judul')
+            const db = firebase.firestore()
+            let url = ''
             let bahan = ['']
             let jmlBahan = ['']
+
+            const resepRef = db.collection("resep").where("judul", "==", slug.replace('-', ' '))
+            const resQuery = await resepRef.limit(1).get()
+            const res = resQuery.docs[0]
+            if (!resQuery.empty) {
+                const data = res.data()
+                steps.value = data.body
+                deskripsi.value = data.deskripsi
+                document.getElementById('thumbPic').src = data.thumbnail
+                judul.value = data.judul
+                bahan = data.bahan
+                jmlBahan = data.jmlBahan
+                url = data.thumbnail
+                UpdateBahan()
+            }
             UpdateBahan()
             function AddBahan() {
                 bahan.push('')
@@ -212,7 +236,7 @@
             }
 
 
-            document.getElementById('BtnTambahSoal').addEventListener('click', () => {
+            document.getElementById('BtnTambahBahan').addEventListener('click', () => {
                 AddBahan()
             })
 
@@ -222,7 +246,7 @@
                 branding: false
             });
 
-            const db = firebase.firestore()
+
             document.getElementById('cancelBtn').addEventListener('click', () => {
                 window.location.href = './dashboard.html';
             })
@@ -270,12 +294,6 @@
                 document.getElementById('formResep').addEventListener('submit', async (e) => {
                     e.preventDefault()
                     SetLoading(true)
-                    const steps = document.getElementById('step').value
-                    const deskripsi = document.getElementById('deskripsi').value
-                    const thumbnail = document.getElementById('Thumbnail').files[0]
-                    const body = document.getElementById('step').value
-                    const judul = document.getElementById('judul').value
-                    let url = ''
 
                     if (document.getElementById('Thumbnail').files.length > 0) {
                         const storageRef = firebase.storage().ref('ThumbnailResep').child(thumbnail.name);
@@ -283,34 +301,23 @@
                         url = await storageRef.getDownloadURL()
                     }
 
-                    const resSubmitResep = await db.collection('resep').add({
+                    return await db.collection('resep').doc(res.id).update({
                         thumbnail: url,
-                        deskripsi: deskripsi,
+                        deskripsi: deskripsi.value,
                         bahan: bahan,
                         jmlBahan: jmlBahan,
-                        body: body,
-                        cookLaterCount: 0,
-                        judul: judul,
-                        komenCount: 0,
-                        pembuatResep: user.uid,
-                        likedBy: [],
-                        timestamp: firebase.firestore.FieldValue.serverTimestamp()
-                    }).catch((err) => {
-                        console.log(err);
-                        SetLoading(false)
+                        body: body.value,
+                        judul: judul.value,
+                        updated_at: firebase.firestore.FieldValue.serverTimestamp()
+                    }).then(() => {
+                        window.location.href = './dashboard.html'
                         return;
-                    });
-
-                    if (resSubmitResep) {
-                        return await db.collection('Users').doc(user.uid).update({
-                            ListResep: firebase.firestore.FieldValue.arrayUnion(resSubmitResep.id)
-                        }).then(() => {
-                            window.location.href = "./dashboard.html"
-                        }).catch(err => {
+                    })
+                        .catch((err) => {
                             console.log(err);
                             SetLoading(false)
-                        })
-                    }
+                            return;
+                        });
                 })
             });
         })

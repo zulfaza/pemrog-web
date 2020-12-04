@@ -26,3 +26,6 @@ body {
 .btn.btn-hapus:focus {
   box-shadow: none;
 }
+.card-title {
+  text-transform: capitalize;
+}

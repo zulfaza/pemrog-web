@@ -94,7 +94,7 @@
                     <div id="bahanWrapper">
 
                     </div>
-                    <button type="button" class="btn btn-orange" id="BtnTambahSoal">Tambah bahan</button>
+                    <button type="button" class="btn btn-orange" id="BtnTambahBahan">Tambah bahan</button>
                     <div class="form-group mt-3">
                         <label for="step">Step</label>
                         <textarea class="form-control" name="" id="step" cols="30" rows="10"></textarea>
@@ -211,7 +211,7 @@
             }
 
 
-            document.getElementById('BtnTambahSoal').addEventListener('click', () => {
+            document.getElementById('BtnTambahBahan').addEventListener('click', () => {
                 AddBahan()
             })
 
@@ -270,7 +270,8 @@
             });
 
             const db = firebase.firestore()
-            document.getElementById('cancelBtn').addEventListener('click', () => {
+            document.getElementById('cancelBtn').addEventListener('click', (e) => {
+                e.preventDefault()
                 window.location.href = './dashboard.html';
             })
 
@@ -334,7 +335,6 @@
                     }
 
                     const resSubmitResep = await db.collection('resep').add({
-                        slug: judul.replace(' ', '-'),
                         thumbnail: url,
                         deskripsi: deskripsi,
                         bahan: bahan,
