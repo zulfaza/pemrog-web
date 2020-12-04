@@ -2,7 +2,9 @@
   --orange: #f57b51;
   --yellow: #fbbc58;
 }
-
+html {
+  scroll-behavior: smooth;
+}
 body {
   font-family: "Montserrat", sans-serif;
 }
@@ -10,6 +12,11 @@ body {
   color: #fff;
   background-color: var(--orange);
   border-color: var(--orange);
+}
+.btn-black {
+  color: #fff;
+  background-color: black;
+  border-color: black;
 }
 .navbar-orange .navbar-brand,
 .navbar-orange .navbar-nav .nav-link {

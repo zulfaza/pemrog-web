@@ -24,6 +24,7 @@
 </head>
 
 <body>
+
   <nav class="navbar navbar-expand-lg navbar-light navbar-orange">
     <div class="container">
       <a class="navbar-brand font-weight-bold" href="/">dailycious</a>
@@ -55,67 +56,13 @@
       </div>
     </div>
   </nav>
-  <div class="container mt-5">
+  <div class="container my-5" id="container">
 
-    <div id="header" class="text-center">
-
+    <div class="d-flex align-items-center justify-content-center flex-column">
+      <div class="spinner-border" style="width: 3rem; height: 3rem;" role="status"></div>
+      <h3 class="font-weight-bold mt-3">Loading...</h3>
     </div>
 
-    <div class="d-flex justify-content-center">
-      <div class="tombol">
-        <button class="btn">
-          <span class="icon">
-            <i class="far fa-comment"></i>
-          </span>
-          <span>Komentar</span>
-        </button>
-      </div>
-      <div class="tombol">
-        <button class="btn">
-          <span class="icon">
-            <i class="fas fa-share-alt"></i>
-          </span>
-          <span>Bagikan</span>
-        </button>
-      </div>
-      <div class="tombol">
-        <button class="btn">
-          <span class="icon">
-            <i class="far fa-bookmark"></i>
-          </span>
-          <span>Simpan</span>
-        </button>
-      </div>
-    </div>
-
-    <div class="card my-3">
-      <div class="card-body" id="resepDoc">
-
-      </div>
-    </div>
-
-
-    <h4 class="font-weight-bold">Tulis Komentar</h4>
-    <form id="formUpdate">
-      <div class="card my-3">
-        <div class="card-body">
-          <div class="form-group">
-            <textarea class="form-control" placeholder="Masukkan Komentar" id="newKomen" rows="7  "></textarea>
-          </div>
-        </div>
-      </div>
-      <div class="text-right">
-        <button class="btn btn-dark">Komentar</button>
-      </div>
-    </form>
-    <h4 class="font-weight-bold">Tulis Komentar</h4>
-    <div class="card mb-3">
-      <div class="card-body">
-        <code id="ListKomentar">
-
-        </code>
-      </div>
-    </div>
   </div>
 
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
@@ -128,19 +75,118 @@
     referrerpolicy="origin"></script>
   <script>
     document.addEventListener('DOMContentLoaded', async function () {
-      tinymce.init({
-        selector: 'textarea',
-        menubar: false,
-        branding: false
-      });
       const params = new URLSearchParams(window.location.search)
       const slug = params.get('resep')
       const db = firebase.firestore();
-      const resepRef = db.collection("resep").where("judul", "==", slug.replace('-', ' '))
-      const resQuery = await resepRef.limit(1).get()
-      if (!resQuery.empty) {
+      firebase.auth().onAuthStateChanged(async function (user) {
+        const dropdownWrapper = document.getElementById('dropdownWrapper')
+        let isAdmin = false
+        if (user) {
+          const claims = (await user.getIdTokenResult()).claims
+          isAdmin = claims.admin
+          dropdownWrapper.innerHTML = `
+            < a class="dropdown-item" href = "./dashboard.html" > Dashboard</a >
+            <a class="dropdown-item" href="./update.html">Update Profile</a>
+            <button class="btn dropdown-item" id="logout">
+                Signout
+            </button>
+          `
+          document.getElementById('logout').addEventListener('click', (e) => {
+            e.preventDefault();
+            return firebase.auth().signOut().then(function () {
+              window.location.href = './Login.html'
+            }).catch(function (error) {
+              console.log(error);
+            });
+
+          })
+        } else {
+          dropdownWrapper.innerHTML = `
+            < a class="dropdown-item" href = "./Login.html" > Login</a >
+            <a class="dropdown-item" href="./Register.html">Regis</a>
+          `
+        }
+
+        const resepRef = db.collection("resep").where("judul", "==", slug.replace('-', ' '))
+        const resQuery = await resepRef.limit(1).get()
+        if (resQuery.empty) {
+          document.getElementById('container').innerHTML = `
+          <div class="d-flex justify-content-center align-items-center flex-column">
+            <h1 class="font-weight-bold">404</h1>
+            <p>Resep yang kamu cari tidak ada</p>
+            <a href="./" class="btn btn-orange">Kembali ke Beranda</a>
+          </div>`
+          return
+        } else {
+          document.getElementById('container').innerHTML = `
+          <div id="header" class="text-center">
+
+          </div>
+
+          <div class="d-flex justify-content-center">
+            <div class="tombol">
+              <a href="#ListKomentar" class="btn">
+                <span class="icon">
+                  <i class="far fa-comment"></i>
+                </span>
+                <span>Komentar</span>
+              </a>
+            </div>
+            <div class="tombol">
+              <button class="btn">
+                <span class="icon">
+                  <i class="fas fa-share-alt"></i>
+                </span>
+                <span>Bagikan</span>
+              </button>
+            </div>
+            <div class="tombol">
+              <button class="btn">
+                <span class="icon">
+                  <i class="far fa-bookmark"></i>
+                </span>
+                <span>Simpan</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="card my-3">
+            <div class="card-body" id="resepDoc">
+
+            </div>
+          </div>
+
+
+          <h4 class="font-weight-bold">Tulis Komentar</h4>
+          <form id="formUpdate">
+            <div class="card my-3">
+              <div class="card-body">
+                <div class="form-group">
+                  <textarea class="form-control" placeholder="Masukkan Komentar" id="newKomen" rows="7  "></textarea>
+                </div>
+              </div>
+            </div>
+            <div class="text-right">
+              <button class="btn btn-black font-weight-bold">Komentar</button>
+            </div>
+          </form>
+          <h4 class="font-weight-bold">Tulis Komentar</h4>
+          <div class="card mb-3">
+            <div class="card-body">
+              <code id="ListKomentar">
+
+              </code>
+            </div>
+          </div>
+          `
+          tinymce.init({
+            selector: 'textarea',
+            menubar: false,
+            branding: false
+          });
+        }
         const res = resQuery.docs[0]
-        const { judul, body, bahan, jmlBahan, pembuatResep, timestamp, deskripsi } = res.data()
+        const { judul, body, bahan, jmlBahan, pembuatResep, timestamp, deskripsi, thumbnail } = res.data()
         const KomenRef = db.collection("resep").doc(res.id).collection('komen')
         document.title = judul + " | Dailycious"
         let listBahan = '';
@@ -155,9 +201,17 @@
           <h3>Langkah-langkah</h3>
           ${body}
         `
+        let thumb = ''
+        if (thumbnail !== '') {
+          thumb = `<img src="${thumbnail}" alt="${judul}">`
+        }
         const header = `
-        <h1 class="text-center font-weight-bold" >${judul}</h1>
-        <h3 class="text-center">Oleh ${pembuatResep.nama} | ${new Date(timestamp.seconds * 1000).toDateString()}</h3>
+          <h1 class="text-center font-weight-bold" >${judul}</h1>
+          <h3 class="text-center">Oleh ${pembuatResep.nama} | ${new Date(timestamp.seconds * 1000).toDateString()}</h3>
+          <div class="thumbnail">
+            ${thumb}
+          </div>
+
         ${deskripsi}
         `
         document.getElementById('header').innerHTML = header
@@ -177,9 +231,12 @@
               <div class="col-1 profile">
                   <img src="https://avatars.dicebear.com/api/human/${users[uid_sender].displayName.split(' ')[0]}.svg" alt="Profile" class="img-fluid">
               </div>
-              <div class="col-11">
+              <div class="col-10">
                   <h4 class="font-weight-bold text-dark">${users[uid_sender].displayName}</h4>
                   ${komen}
+              </div>
+              <div class="col-1">
+                ${user.uid === uid_sender || isAdmin ? `<button type="button" class="btn py-0 px-2 btn-danger font-weight-bold btnHapusKomen" data-docid=${doc.id} >X</button>` : ''}
               </div>
           </div>
             `
@@ -189,51 +246,30 @@
           } else {
             document.getElementById('ListKomentar').innerHTML = 'Belum ada komentar'
           }
-        })
-
-        firebase.auth().onAuthStateChanged(function (user) {
-          const dropdownWrapper = document.getElementById('dropdownWrapper')
-          if (user) {
-            dropdownWrapper.innerHTML = `
-            <a class="dropdown-item" href="./dashboard.html">Dashboard</a>
-            <a class="dropdown-item" href="./update.html">Update Profile</a>
-            <button class="btn dropdown-item" id="logout">
-              Signout
-            </button>
-          `
-            document.getElementById('logout').addEventListener('click', (e) => {
-              e.preventDefault();
-              return firebase.auth().signOut().then(function () {
-                window.location.href = './Login.html'
-              }).catch(function (error) {
-                console.log(error);
-              });
-
-            })
-          } else {
-            dropdownWrapper.innerHTML = `
-          <a class="dropdown-item" href="./Login.html">Login</a>
-          <a class="dropdown-item" href="./Register.html">Regis</a>
-          `
-          }
-
-          document.getElementById('formUpdate').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const newKomen = document.getElementById('newKomen').value;
-            return KomenRef.add({
-              komen: newKomen,
-              uid_sender: user.uid,
-              timestamp: firebase.firestore.FieldValue.serverTimestamp()
-            }).catch(err => {
+          $('.btnHapusKomen').click(async e => {
+            const { docid } = e.target.dataset
+            e.target.innerHTML = `<div class="spinner-border spinner-border-sm" role="status"></div>`
+            e.target.setAttribute('disabled', '')
+            KomenRef.doc(docid).delete().catch(err => {
               console.log(err);
             })
-          });
-
+          })
         })
 
-      }
 
+        document.getElementById('formUpdate').addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const newKomen = document.getElementById('newKomen').value;
+          return KomenRef.add({
+            komen: newKomen,
+            uid_sender: user.uid,
+            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+          }).catch(err => {
+            console.log(err);
+          })
+        });
 
+      })
 
     })
   </script>

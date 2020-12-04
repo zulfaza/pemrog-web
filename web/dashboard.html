@@ -63,7 +63,6 @@
             </div>
         </div>
     </nav>
-
     <div class="container mt-3">
         <section class="myResep">
             <h2 class="font-weight-bold">Resepmu</h2>
@@ -124,7 +123,7 @@
                 additionalClass.forEach(data => {
                     newClass += data + " "
                 })
-                if (data.thumbnail) {
+                if (data.thumbnail !== '') {
                     thumb = `<img src=${data.thumbnail} alt="${data.judul}" class="img-fluid">`
                 } else {
                     thumb = `
@@ -140,8 +139,8 @@
                                    ${thumb}
                                 </div>
                                 <h5 class="card-title">${data.judul}</h5>
-                                <div class="btnWrapper">
-                                    <a href="#" class="btn"><span class="far fa-comment"></span></a>
+                                <div class="btnWrapper">    
+                                    <a href="./resep.html?resep=${data.slug}" class="btn" target="_blank" rel="noopener noreferrer"><span class="far fa-comment"></span></a>
                                     <a href="#" class="btn"><span class="far fa-edit"></span></a>
                                     <button type="button" class="btn btn-hapus text-white" data-id=${docid} data-tipe=${tipe}><span class="far fa-trash-alt" data-id=${docid} data-tipe=${tipe}></span></button>
                                 </div>
