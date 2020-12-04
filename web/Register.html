@@ -139,8 +139,13 @@
           uid: res.user.uid,
           displayName: displayName
         }
-
-        await axios.post('http://localhost:5001/final-project-pemrog-web/asia-southeast2/api/regis', request)
+        let urlAPI = ''
+        if (window.location.hostname === "localhost") {
+          urlAPI = 'http://localhost:5001/final-project-pemrog-web/asia-southeast2/api'
+        } else {
+          urlAPI = 'https://asia-southeast2-final-project-pemrog-web.cloudfunctions.net/api'
+        }
+        await axios.post(`${urlAPI}/regis`, request)
           .catch(err => {
             console.log(err);
             setLoading(false)
