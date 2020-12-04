@@ -215,10 +215,58 @@
                 AddBahan()
             })
 
+            const MakeID = (length) => {
+                var result = '';
+                var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+                var charactersLength = characters.length;
+                for (var i = 0; i < length; i++) {
+                    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+                }
+                return result;
+            }
+
+            const UploadImage = (file, success, failure, ref = 'Media/Resep/') => {
+                let extention = file.name.split('.').pop().toLowerCase()
+                let arrOfAcceptableExtention = ['jpg', 'png', 'jpeg']
+                if (!arrOfAcceptableExtention.includes(extention)) {
+                    failure('Format tidak didukung, harap masukan file berformat jpp atau png')
+                    return
+                }
+                if (file.size > 5242880) {
+                    failure('Ukuran file terlalu besar, harap masukan file beukuran kurang dari 5Mb')
+                    return
+                }
+
+                firebase.storage().ref(ref).child(`${MakeID(10)}.${extention}`).put(file)
+                    .then(res => {
+                        res.ref.getDownloadURL().then(url => {
+                            success(url)
+                        }).catch(err => {
+                            failure(`${err.code}, ${err.message}`)
+                        })
+                    })
+                    .catch(err => {
+                        failure(`${err.code}, ${err.message}`)
+                    })
+            }
+
             tinymce.init({
                 selector: 'textarea',
                 menubar: false,
-                branding: false
+                branding: false,
+                plugins: [
+                    'advlist autolink lists link image charmap print preview anchor',
+                    'searchreplace visualblocks code fullscreen',
+                    'insertdatetime media table paste code help wordcount image '
+                ],
+                toolbar: 'undo redo | formatselect | ' +
+                    'bold italic backcolor | alignleft aligncenter ' +
+                    'alignright alignjustify | bullist numlist outdent indent | ' +
+                    'removeformat | image ',
+                images_upload_handler: function (blobInfo, success, failure) {
+                    const file = blobInfo.blob()
+                    UploadImage(file, success, failure)
+                },
             });
 
             const db = firebase.firestore()
