@@ -1,6 +1,9 @@
 body {
   background: var(--orange);
 }
+.navbar h1 {
+  font-size: unset;
+}
 
 .card {
   background-color: #fdf6f0;
