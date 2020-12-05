@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
+    <!-- Firebase -->
     <script defer src="/__/firebase/8.1.1/firebase-app.js"></script>
     <script defer src="/__/firebase/8.1.1/firebase-auth.js"></script>
     <script defer src="/__/firebase/8.1.1/firebase-firestore.js"></script>
@@ -12,13 +13,79 @@
     <script defer src="/__/firebase/8.1.1/firebase-analytics.js"></script>
     <script defer src="/__/firebase/8.1.1/firebase-performance.js"></script>
     <script defer src="/__/firebase/init.js?useEmulator=false"></script>
+    <!-- Bootstrap -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
         integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+    <!-- Font -->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/cb61666d8f.js" crossorigin="anonymous"></script>
+    <!-- Css -->
+    <link rel="stylesheet" href="./css/global.css">
+    <link rel="stylesheet" href="./css/dashboard.css">
 </head>
 
 <body>
-    <h1>Dashboard</h1>
-    <button class="btn btn-info" id="logout">Logout</button>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light navbar-orange">
+        <div class="container">
+            <a class="navbar-brand font-weight-bold" href="/">dailycious</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="./search.html">
+                            <span class="fas fa-search"></span>
+                        </a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <span class="fas fa-cog"></span>
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                            <a class="dropdown-item" href="./dashboard.html">Dashboard</a>
+                            <a class="dropdown-item" href="./update.html">Update Profile</a>
+                            <button class="btn dropdown-item" id="logout">
+                                Signout
+                            </button>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="container mt-3">
+        <section class="myResep">
+            <h2 class="font-weight-bold">Resepmu</h2>
+            <div class="mt-3 " id="MyResepWrapper">
+                <a class="btn text-orange" href="./BuatResep.html">
+                    <span class="fas fa-plus-circle"></span> Tulis Resep
+                </a>
+                <div id="listMyResep" class="mt-3 d-flex flex-wrap justify-content-around">
+                    <div class="spinner-border" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="Cooklater mt-4">
+            <h2 class="font-weight-bold">Resep Tersimpan</h2>
+            <div class="mt-3 d-flex flex-wrap justify-content-around" id="CooklaterResepWrapper">
+                <div class="spinner-border" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+            </div>
+        </section>
+    </div>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
         integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
         crossorigin="anonymous"></script>
@@ -26,14 +93,143 @@
         integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
         crossorigin="anonymous"></script>
     <script>
-        document.getElementById('logout').addEventListener('click', () => {
-            return firebase.auth().signOut().then(function () {
-                window.location.href = './Login.html'
-            }).catch(function (error) {
-                console.log(error);
-            });
+        document.addEventListener('DOMContentLoaded', function () {
+            const db = firebase.firestore()
 
-        })
+            document.getElementById('logout').addEventListener('click', (e) => {
+                e.preventDefault();
+                return firebase.auth().signOut().then(function () {
+                    window.location.href = './Login.html'
+                }).catch(function (error) {
+                    console.log(error);
+                });
+
+            })
+            function removeTagsAndLimit(str, strLen = 50) {
+                if ((str === null) || (str === ''))
+                    return false;
+                else
+                    str = str.toString();
+                let newString = str.replace(/(<([^>]+)>)/ig, '')
+                if (newString.length > strLen) {
+                    newString = newString.substring(0, strLen - 3) + "..."
+                }
+                return newString
+            }
+            function StrukturCardResep(data, additionalClass = [], additionalData = {}) {
+                let newClass = ''
+                let thumb = ''
+                const { tipe, docid } = additionalData
+                additionalClass.forEach(data => {
+                    newClass += data + " "
+                })
+                if (data.thumbnail !== '') {
+                    thumb = `<img src=${data.thumbnail} alt="${data.judul}" class="img-fluid">`
+                } else {
+                    thumb = `
+                    <svg class="bd-placeholder-img card-img-top" width="100%" height="248px" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: Image cap">
+                                        <title>${data.judul}</title>
+                                        <rect width="100%" height="100%" fill="#C4C4C4"></rect>
+                                    </svg>
+                    `
+                }
+                return `<div class="card mb-3 ${newClass} " style="width: 18rem;">
+                            <div class="card-body">
+                                <div class="imgThumb rounded-20 mb-3">
+                                   ${thumb}
+                                </div>
+                                <h5 class="card-title">${data.judul}</h5>
+                                <div class="btnWrapper">    
+                                    <a href="./resep.html?resep=${data.judul.replace(' ', '-')}" class="btn" target="_blank" rel="noopener noreferrer"><span class="far fa-comment"></span></a>
+                                    <a href="./editResep.html?resep=${data.judul.replace(' ', '-')}" class="btn"><span class="far fa-edit"></span></a>
+                                    <button type="button" class="btn btn-hapus text-white" data-id=${docid} data-tipe=${tipe}><span class="far fa-trash-alt" data-id=${docid} data-tipe=${tipe}></span></button>
+                                </div>
+                            </div>
+                        </div>`
+            }
+            firebase.auth().onAuthStateChanged(async function (user) {
+                if (!user) {
+                    window.location.href = './Login.html';
+                    return;
+                }
+                // Get List of resep
+                await db.collection("resep").onSnapshot(async (listDocs) => {
+
+                    const DataUser = (await db.collection('Users').doc(user.uid).get()).data()
+                    let listCardsMyResep = ''
+                    let listCardsCookLater = ''
+                    let additionalClass = []
+
+                    if (DataUser.ListResep.length < 3) {
+                        additionalClass.push('mr-3')
+                        document.getElementById('listMyResep').classList.remove('justify-content-around')
+                    }
+                    listDocs.docs.forEach(doc => {
+                        const data = doc.data()
+                        let additionalData = {}
+                        additionalData.docid = doc.id
+                        if (DataUser.ListResep.includes(doc.id)) {
+                            additionalData.tipe = 'ListResep'
+                            listCardsMyResep += StrukturCardResep(data, additionalClass, additionalData)
+                        }
+                        if (DataUser.listCookLater.includes(doc.id)) {
+                            additionalData.tipe = 'listCookLater'
+                            listCardsCookLater += StrukturCardResep(data, additionalClass, additionalData)
+                        }
+                    })
+                    if (listCardsMyResep === '') {
+                        document.getElementById('listMyResep').innerHTML = `
+                    <br>
+                    <div class="text-center">
+                        <h4>Tidak ada resep yang kamu simpan</h4>
+                        <a class="btn text-orange" href="./BuatResep.html">
+                        <span class="fas fa-plus-circle"></span> Tulis Resep
+                    </a>
+                    </div>
+                    `
+                    } else {
+                        document.getElementById('listMyResep').innerHTML = listCardsMyResep
+                    }
+
+
+                    if (listCardsCookLater === '') {
+                        document.getElementById('CooklaterResepWrapper').innerHTML = `
+                    <br>
+                    <div class="text-center">
+                        <h4>Tidak ada resep yang kamu simpan</h4>
+                        <a class="btn text-orange" href="./BuatResep.html">
+                            <span class="fas fa-search"></span> Cari Resep
+                        </a>
+                    </div>
+                    `
+                    } else {
+                        document.getElementById('CooklaterResepWrapper').innerHTML = listCardsCookLater
+                    }
+                    $('.btn-hapus').click(async (e) => {
+                        const { id, tipe } = e.target.dataset
+                        const Loading = `<div class="spinner-border spinner-border-md mr-2 text-white" role="status"></div>`
+                        if (e.target.localName === 'span')
+                            e.target.parentNode.innerHTML = Loading
+                        else {
+                            e.target.innerHTML = Loading
+                        }
+                        await db.collection('resep').doc(id).delete().catch(err => {
+                            console.log(err);
+                        })
+                        if (tipe === 'ListResep') {
+                            await db.collection('Users').doc(user.uid).update({
+                                ListResep: firebase.firestore.FieldValue.arrayRemove(id)
+                            })
+                        } else if (tipe === 'listCookLater') {
+                            await db.collection('Users').doc(user.uid).update({
+                                listCookLater: firebase.firestore.FieldValue.arrayRemove(id)
+                            })
+                        }
+                    })
+                })
+
+            });
+        });
     </script>
 </body>
 

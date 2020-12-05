@@ -21,6 +21,7 @@ app.post("/regis", async (req, res) => {
       ListResep: [],
       listCookLater: [],
       uid: uid,
+      bio:''
     })
     .then(() => {
       return res.json({ pesan: "berhasil membuat data" });
