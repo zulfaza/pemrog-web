@@ -317,6 +317,7 @@
                         updated_at: firebase.firestore.FieldValue.serverTimestamp()
                     }).then(() => {
                         bahan.forEach(bahanData => {
+                            console.log(bahanData);
                             db.collection('Data').doc('BuatSearch').update({
                                 listBahan: firebase.firestore.FieldValue.arrayUnion(bahanData)
                             })
