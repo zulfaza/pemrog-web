@@ -68,7 +68,7 @@
           </div>
           <div class="form-group">
             <label for="bio">Bio</label>
-            <textarea type="email" class="form-control" placeholder="Enter your new bio" id="email"></textarea>
+            <textarea type="email" class="form-control" placeholder="Enter your new bio" id="bio"></textarea>
           </div>
 
           <button class="btn btn-primary">Update</button>
@@ -159,14 +159,11 @@
           if (user) {
 
             const displayName = document.getElementById('newName').value;
-            const dbRef = db.collection('users').doc(user.uid);
+            const dbRef = db.collection('Users').doc(user.uid);
             const bio = document.getElementById('bio').value;
 
-            await res.user.updateProfile({
+            await user.updateProfile({
               displayName: displayName
-            })
-            await res.user.updateProfile({
-              bio: bio
             })
             return await dbRef.update({
               displayName: displayName,
@@ -176,7 +173,7 @@
               return window.location.href = './dashboard.html';
 
             }).catch(err => {
-              document.getElementById('auth').innerHTML = `<div class="alert alert-danger" role="alert">failed</div>`;
+              document.getElementById('auth').innerHTML = `<div class="alert alert-danger" role="alert">${err.message}</div>`;
             })
           }
         });
