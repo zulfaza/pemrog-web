@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,92 +15,140 @@
     <script defer src="/__/firebase/init.js?useEmulator=false"></script>
     <title>Document</title>
     <link rel="stylesheet" href="./css/global.css">
+    <link rel="stylesheet" href="./css/search.css">
 </head>
+
 <body>
-    <div class="container">
-        <div id="resep">
-            
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-yellow bg-transparant">
+        <div class="container">
+            <a class="navbar-brand font-weight-bold" href="/">
+                <h1>dailycious</h1>
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+
+                </ul>
+
+            </div>
+
+            <div class="input-group mb-3">
+                <input type="text" class="form-control" placeholder="cari resep" aria-label="cari resep"
+                    aria-describedby="basic-addon2">
+            </div>
+            <div class="input-group mb-3">
+                <input type="text" class="form-control" placeholder="masukkan bahan" aria-label="masukkan bahan"
+                    aria-describedby="basic-addon2">
+            </div>
+
+        </div>
+    </nav>
+
+
+    <div class="container mt-5" style="margin-top: 8rem!important;">
+        <div class="d-flex justify-content-around" id="resep">
+
         </div>
     </div>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
-    integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
-    crossorigin="anonymous"></script>
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
-    crossorigin="anonymous"></script>
+        integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
+        crossorigin="anonymous"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const db=firebase.firestore()
+            const db = firebase.firestore()
             firebase.auth().onAuthStateChanged(function (user) {
 
-            db.collection('Users').doc(user.uid)
-            .onSnapshot(snap=>{
-                const userDB = snap.data()
+                db.collection('Users').doc(user.uid)
+                    .onSnapshot(snap => {
+                        const userDB = snap.data()
 
-                db.collection('resep')
-                    .get().then(function(snapshot) {
-                        let ListResep = ""
-                        snapshot.docs.forEach(doc=>{
-                            const data = doc.data()
-                            let button = ''
-                            if(userDB.listCookLater.includes(doc.id)){
-                                button = `<button type="button" class="btn btn-secondary btnHapus" data-resep="${doc.id}">Hapus</button>`
-                            }else{
-                                button = `<button type="button" class="btn btn-primary btnSave" data-resep="${doc.id}">Save</button>`
-                            }
-                            
-                            ListResep += `
-                                <div class="card" style="width: 18rem;">
-                                <img src="${data.thumbnail}" class="card-img-top" alt="${data.judul}">
-                                <div class="card-body">
-                                    <h5 class="card-title">${data.judul}</h5>
-                                    <p class="card-text">${data.pembuatResep.nama}</p>
-                                    ${button}
-                                </div>
-                                </div>
-                            `
-                        })
-    
-                        document.getElementById('resep').innerHTML = ListResep
-                        $('.btnSave').click((e)=>{
-                            const idResep = e.target.dataset.resep
-                            db.collection('Users')
-                            .doc(user.uid).update({
-                                listCookLater:firebase.firestore.FieldValue.arrayUnion(idResep)
-                            }).then(()=>{
-                                console.log('Berhasil disimpan');
-                                db.collection('resep').doc(idResep).update({
-                                    cookLaterCount:firebase.firestore.FieldValue.increment(1)
-                                }).then(()=>{console.log('berhasil')}).catch(err=>{console.log(err)})
-                            }).catch(err=>{
+                        db.collection('resep')
+                            .get().then(function (snapshot) {
+                                let ListResep = ""
+                                snapshot.docs.forEach(doc => {
+                                    const data = doc.data()
+                                    let button = ''
+                                    let thumb = ''
+
+                                    if (userDB.listCookLater.includes(doc.id)) {
+                                        button = `<button type="button" class="btn btn-secondary btnHapus" data-resep="${doc.id}">Hapus</button>`
+                                    } else {
+                                        button = `<button type="button" class="btn btn-primary btnSave" data-resep="${doc.id}">Save</button>`
+                                    }
+
+
+                                    if (data.thumbnail !== '') {
+                                        thumb = `<img src=${data.thumbnail} alt="${data.judul}">`
+                                    } else {
+                                        thumb = `
+                                        <svg class="bd-placeholder-img card-img-top" width="100%" height="248px" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: Image cap">
+                                                            <title>${data.judul}</title>
+                                                            <rect width="100%" height="100%" fill="#C4C4C4"></rect>
+                                                        </svg>
+                                        `
+                                    }
+                                    ListResep += `
+                                        <div class="card" style="width: 18rem;">
+                                        <div class="card-body">
+                                            <div class="imgThumb rounded-20 mb-3">
+                                                ${thumb}
+                                            </div>
+                                            <h5 class="card-title">${data.judul}</h5>
+                                            <p class="card-text">${data.pembuatResep.nama}</p>
+                                            ${button}
+                                        </div>
+                                        </div>
+                                    `
+                                })
+
+                                document.getElementById('resep').innerHTML = ListResep
+                                $('.btnSave').click((e) => {
+                                    const idResep = e.target.dataset.resep
+                                    db.collection('Users')
+                                        .doc(user.uid).update({
+                                            listCookLater: firebase.firestore.FieldValue.arrayUnion(idResep)
+                                        }).then(() => {
+                                            console.log('Berhasil disimpan');
+                                            db.collection('resep').doc(idResep).update({
+                                                cookLaterCount: firebase.firestore.FieldValue.increment(1)
+                                            }).then(() => { console.log('berhasil') }).catch(err => { console.log(err) })
+                                        }).catch(err => {
+                                            console.log(err);
+                                        })
+
+
+                                })
+                                $('.btnHapus').click((e) => {
+                                    const idResep = e.target.dataset.resep
+                                    db.collection('Users')
+                                        .doc(user.uid).update({
+                                            listCookLater: firebase.firestore.FieldValue.arrayRemove(idResep)
+                                        }).then(() => {
+                                            console.log('Berhasil disimpan');
+                                            db.collection('resep').doc(idResep).update({
+                                                cookLaterCount: firebase.firestore.FieldValue.increment(-1)
+                                            }).then(() => { console.log('berhasil') }).catch(err => { console.log(err) })
+                                        }).catch(err => {
+                                            console.log(err);
+                                        })
+                                })
+                            }).catch(err => {
                                 console.log(err);
-                            })
+                            });
+                    })
 
 
-                        })
-                        $('.btnHapus').click((e)=>{
-                            const idResep = e.target.dataset.resep
-                            db.collection('Users')
-                            .doc(user.uid).update({
-                                listCookLater:firebase.firestore.FieldValue.arrayRemove(idResep)
-                            }).then(()=>{
-                                console.log('Berhasil disimpan');
-                                db.collection('resep').doc(idResep).update({
-                                    cookLaterCount:firebase.firestore.FieldValue.increment(-1)
-                                }).then(()=>{console.log('berhasil')}).catch(err=>{console.log(err)})
-                            }).catch(err=>{
-                                console.log(err);
-                            })
-                        })
-                    }).catch(err=>{
-                        console.log(err);
-                    });
-            })
-
-
-                });
+            });
         })
 
     </script>
 </body>
+
 </html>

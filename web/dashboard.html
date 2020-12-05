@@ -67,7 +67,7 @@
         <section class="myResep">
             <h2 class="font-weight-bold">Resepmu</h2>
             <div class="mt-3 " id="MyResepWrapper">
-                <a class="btn text-orange" href="./BuatResep.html">
+                <a class="btn text-orange" href="./BuatResep.html" id="tambahResep">
                     <span class="fas fa-plus-circle"></span> Tulis Resep
                 </a>
                 <div id="listMyResep" class="mt-3 d-flex flex-wrap justify-content-around">
@@ -84,6 +84,7 @@
                     <span class="sr-only">Loading...</span>
                 </div>
             </div>
+
         </section>
     </div>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
@@ -133,6 +134,18 @@
                                     </svg>
                     `
                 }
+
+                let varButton = ''
+                if (tipe === 'listCookLater') {
+                    varButton = `
+                    <button type="button" class="btn btn-hapusCookLater text-white" data-id=${docid}>
+                        <span class="fas fa-bookmark" data-id=${docid}></span>
+                    </button>
+                    `
+                } else {
+                    varButton = `<button type="button" class="btn btn-hapus text-white" data-id=${docid} data-tipe=${tipe}><span class="far fa-trash-alt" data-id=${docid} data-tipe=${tipe}></span>`
+                }
+
                 return `<div class="card mb-3 ${newClass} " style="width: 18rem;">
                             <div class="card-body">
                                 <div class="imgThumb rounded-20 mb-3">
@@ -142,7 +155,7 @@
                                 <div class="btnWrapper">    
                                     <a href="./resep.html?resep=${data.judul.replace(' ', '-')}" class="btn" target="_blank" rel="noopener noreferrer"><span class="far fa-comment"></span></a>
                                     <a href="./editResep.html?resep=${data.judul.replace(' ', '-')}" class="btn"><span class="far fa-edit"></span></a>
-                                    <button type="button" class="btn btn-hapus text-white" data-id=${docid} data-tipe=${tipe}><span class="far fa-trash-alt" data-id=${docid} data-tipe=${tipe}></span></button>
+                                    ${varButton}
                                 </div>
                             </div>
                         </div>`
@@ -155,14 +168,18 @@
                 // Get List of resep
                 await db.collection("resep").onSnapshot(async (listDocs) => {
 
-                    const DataUser = (await db.collection('Users').doc(user.uid).get()).data()
+                    let DataUser = (await db.collection('Users').doc(user.uid).get()).data()
                     let listCardsMyResep = ''
                     let listCardsCookLater = ''
                     let additionalClass = []
 
-                    if (DataUser.ListResep.length < 3) {
+                    if (DataUser.ListResep.length < 3 && DataUser.ListResep.length > 0) {
                         additionalClass.push('mr-3')
                         document.getElementById('listMyResep').classList.remove('justify-content-around')
+                    }
+                    if (DataUser.listCookLater.length < 3 && DataUser.listCookLater.length > 0) {
+                        additionalClass.push('mr-3')
+                        document.getElementById('CooklaterResepWrapper').classList.remove('justify-content-around')
                     }
                     listDocs.docs.forEach(doc => {
                         const data = doc.data()
@@ -178,15 +195,16 @@
                         }
                     })
                     if (listCardsMyResep === '') {
+                        document.getElementById('tambahResep').classList.add("d-none")
                         document.getElementById('listMyResep').innerHTML = `
-                    <br>
-                    <div class="text-center">
-                        <h4>Tidak ada resep yang kamu simpan</h4>
-                        <a class="btn text-orange" href="./BuatResep.html">
-                        <span class="fas fa-plus-circle"></span> Tulis Resep
-                    </a>
-                    </div>
-                    `
+                        <br>
+                        <div class="text-center">
+                            <h4>Tidak ada resep yang kamu simpan</h4>
+                            <a class="btn text-orange" href="./BuatResep.html">
+                            <span class="fas fa-plus-circle"></span> Tulis Resep
+                        </a>
+                        </div>
+                        `
                     } else {
                         document.getElementById('listMyResep').innerHTML = listCardsMyResep
                     }
@@ -205,6 +223,30 @@
                     } else {
                         document.getElementById('CooklaterResepWrapper').innerHTML = listCardsCookLater
                     }
+
+                    $('.btn-hapusCookLater').click(async (e) => {
+                        const { id } = e.target.dataset
+                        const Loading = `<div class="spinner-border spinner-border-md mr-2 text-white" role="status"></div>`
+                        if (e.target.localName === 'span')
+                            e.target.parentNode.innerHTML = Loading
+                        else {
+                            e.target.innerHTML = Loading
+                        }
+                        db.collection('Users').doc(user.uid).update({
+                            listCookLater: firebase.firestore.FieldValue.arrayRemove(id)
+                        }).then(() => {
+                            db.collection('resep').doc(id).update({
+                                cookLaterCount: firebase.firestore.FieldValue.increment(-1)
+                            }).then(async (res) => {
+                                console.log("berhasil diupdate", res);
+                            }).catch(err => {
+                                console.log(err);
+                            })
+                        }).catch(err => {
+                            console.log(err);
+                        })
+                    })
+
                     $('.btn-hapus').click(async (e) => {
                         const { id, tipe } = e.target.dataset
                         const Loading = `<div class="spinner-border spinner-border-md mr-2 text-white" role="status"></div>`

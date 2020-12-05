@@ -15,15 +15,23 @@ body {
   overflow: hidden;
   height: 248px;
 }
+.card .imgThumb img {
+  object-fit: cover;
+  height: 100%;
+  width: 100%;
+}
+
 .btnWrapper a {
   font-size: 24px;
   color: white;
 }
-.btn.btn-hapus {
+.btn.btn-hapus,
+.btn.btn-hapusCookLater {
   font-size: 22px;
 }
 
-.btn.btn-hapus:focus {
+.btn.btn-hapus:focus,
+.btn.btn-hapusCookLater:focus {
   box-shadow: none;
 }
 .card-title {

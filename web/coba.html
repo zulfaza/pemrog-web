@@ -19,26 +19,10 @@
 <body>
 
     <div class="container">
-        <div class="card mt-4">
-            <div class="card-body">
-                <form id="form1">
-                    <div class="form-group">
-                        <input type="text" class="form-control" id="inistring">
-                    </div>
-                    <button class="btn btn-primary">Buat</button>
-                </form>
-            </div>
+        <div>
+
         </div>
 
-        <div class="card">
-            <div class="card-body">
-                <code id="isiDoc">
-
-                </code>
-            </div>
-        </div>
-
-        <button type="button" class="btn btn-primary" id="cobaFungsi">Cobaaa</button>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
@@ -49,59 +33,7 @@
         crossorigin="anonymous"></script>
     <script>
 
-        function cobaaaa() {
-            console.log("1");
-            let myPromise = new Promise(function (myResolve, myReject) {
-                setTimeout(function () { myResolve(() => { console.log('2') }); }, 1000);
-            });
 
-            myPromise.then(res => {
-                res()
-            })
-            console.log("3");
-        }
-        document.getElementById('cobaFungsi').addEventListener('click', cobaaaa)
-        // document.addEventListener('DOMContentLoaded', function () {
-        //     const db = firebase.firestore();
-        //     const docRef = db.collection('coba').doc('aaaa')
-        //     document.getElementById('form1').addEventListener('submit', async (e) => {
-        //         e.preventDefault()
-        //         const newStr = document.getElementById('inistring').value
-        //         const FieldValue = firebase.firestore.FieldValue
-
-        //         // Delete
-        //         // return await docRef.delete()
-
-
-        //         // Update data
-        //         // return await docRef.update({
-        //         //     timestamp: FieldValue.serverTimestamp()
-        //         // }).then(() => {
-        //         //     console.log('berhasil update data');
-        //         // }).catch(err => {
-        //         //     console.log(err);
-        //         // })
-
-        //         // Create data
-
-        //         // return await docRef.set({
-        //         //     iniArray: [],
-        //         //     iniString: 'string',
-        //         //     iniNumber: 1000
-        //         // }).then(() => {
-        //         //     console.log('berhasil membuat dokumen');
-        //         // }).catch(err => {
-        //         //     console.log(err);
-        //         // })
-        //     })
-        //     docRef.onSnapshot(res => {
-        //         if (res.exists) {
-        //             document.getElementById('isiDoc').innerHTML = JSON.stringify(res.data({ serverTimestamps: 'estimate' }))
-        //         } else {
-        //             document.getElementById('isiDoc').innerHTML = 'ga ada dokumennya'
-        //         }
-        //     })
-        // })
     </script>
 </body>
 

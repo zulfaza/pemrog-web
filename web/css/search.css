@@ -1,0 +1,28 @@
+body {
+  background: var(--orange);
+}
+
+.card {
+  background-color: #fdf6f0;
+  border-radius: 20px;
+  border: none;
+  color: black;
+  text-align: center;
+}
+
+.card .imgThumb {
+  border-radius: 20px;
+  overflow: hidden;
+  height: 248px;
+  border: 4px solid var(--orange);
+}
+
+.card .imgThumb img {
+  object-fit: cover;
+  height: 100%;
+  width: 100%;
+}
+
+/* .search{
+
+} */
