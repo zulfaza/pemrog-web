@@ -12,8 +12,12 @@
   <script defer src="/__/firebase/8.1.1/firebase-analytics.js"></script>
   <script defer src="/__/firebase/8.1.1/firebase-performance.js"></script>
   <script defer src="/__/firebase/init.js?useEmulator=false"></script>
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap" rel="stylesheet">
+  <script src="https://kit.fontawesome.com/cb61666d8f.js" crossorigin="anonymous"></script>
+  <!-- Bootstrap -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
-    integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+      integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
   <style media="screen">
     textarea {
 
@@ -21,41 +25,51 @@
       height: 200px;
     }
   </style>
-  <link href="css/global.css" rel="stylesheet">
+  <link href="./css/update.css" rel="stylesheet">
+  <link rel="stylesheet" href="./css/global.css">
 </head>
 
 <body>
+  <nav class="navbar navbar-expand-lg navbar-light navbar-orange">
+      <div class="container">
+          <a class="navbar-brand font-weight-bold" href="/">dailycious</a>
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+              aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+          </button>
 
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container">
-      <a class="navbar-brand" href="#">Navbar</a>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
-        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse d-md-flex justify-content-md-between" id="navbarNav">
-        <ul class="navbar-nav">
-          <li class="nav-item active">
-            <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Features</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Pricing</a>
-          </li>
-        </ul>
-        <ul class="navbar-nav">
-          <li class="nav-item">
-            <!-- <a href='./Login.html' id='logout' class="nav-link">Logout</a> -->
-            <button id='logout' type="button" class="btn btn-light btn-sm">Logout</button>
-          </li>
-        </ul>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+              <ul class="navbar-nav mr-auto">
+
+              </ul>
+              <ul class="navbar-nav">
+                  <li class="nav-item">
+                      <a class="nav-link" href="./search.html" alt='search'>
+                          <span class="fas fa-search"></span>
+                      </a>
+                  </li>
+
+                  <li class="nav-item dropdown">
+                      <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
+                          data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                          <span class="fas fa-cog"></span>
+                      </a>
+                      <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                          <a class="dropdown-item" href="./dashboard.html">Dashboard</a>
+                          <button class="btn dropdown-item" id="logout">
+                              Signout
+                          </button>
+                      </div>
+                  </li>
+              </ul>
+          </div>
       </div>
-    </div>
   </nav>
 
-  <div class="container mt-5">
+
+
+
+  <div class="container mt-5 ">
     <button type="button" class="btn btn-info mb-5" id="back">back</button>
     <div class="card">
       <div class="card-body">
@@ -70,8 +84,35 @@
             <label for="bio">Bio</label>
             <textarea type="email" class="form-control" placeholder="Enter your new bio" id="bio"></textarea>
           </div>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+              <ul class="navbar-nav mr-auto">
 
-          <button class="btn btn-primary">Update</button>
+              </ul>
+              <ul class="navbar-nav">
+                  <li class="nav-item">
+                      <a class="nav-link" href="./search.html" alt='search'>
+                          <span class="fas fa-search"></span>
+                      </a>
+                  </li>
+
+                  <li class="nav-item dropdown">
+                      <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
+                          data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                          <span class="fas fa-cog"></span>
+                      </a>
+                      <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                          <a class="dropdown-item" href="./dashboard.html">Dashboard</a>
+                          <button class="btn dropdown-item" id="logout">
+                              Signout
+                          </button>
+                      </div>
+                  </li>
+              </ul>
+          </div>
+          <div class="d-flex justify-content-end">
+              <button type="button" class="btn btn-secondary mr-5" id="cancelBtn">CANCEL</button>
+              <button type="button" class="btn btn-orange" id="btnSubmit">SAVE</button>
+          </div>
         </form>
       </div>
 
@@ -86,59 +127,7 @@
   </div>
 
 
-  <footer class="container py-5">
-    <div class="row">
-      <div class="col-12 col-md">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor"
-          stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="d-block mb-2" role="img"
-          viewBox="0 0 24 24" focusable="false">
-          <title>Product</title>
-          <circle cx="12" cy="12" r="10" />
-          <path
-            d="M14.31 8l5.74 9.94M9.69 8h11.48M7.38 12l5.74-9.94M9.69 16L3.95 6.06M14.31 16H2.83m13.79-4l-5.74 9.94" />
-        </svg>
-        <small class="d-block mb-3 text-muted">&copy; 2017-2020</small>
-      </div>
-      <div class="col-6 col-md">
-        <h5>Features</h5>
-        <ul class="list-unstyled text-small">
-          <li><a class="text-muted" href="#">Cool stuff</a></li>
-          <li><a class="text-muted" href="#">Random feature</a></li>
-          <li><a class="text-muted" href="#">Team feature</a></li>
-          <li><a class="text-muted" href="#">Stuff for developers</a></li>
-          <li><a class="text-muted" href="#">Another one</a></li>
-          <li><a class="text-muted" href="#">Last time</a></li>
-        </ul>
-      </div>
-      <div class="col-6 col-md">
-        <h5>Resources</h5>
-        <ul class="list-unstyled text-small">
-          <li><a class="text-muted" href="#">Resource</a></li>
-          <li><a class="text-muted" href="#">Resource name</a></li>
-          <li><a class="text-muted" href="#">Another resource</a></li>
-          <li><a class="text-muted" href="#">Final resource</a></li>
-        </ul>
-      </div>
-      <div class="col-6 col-md">
-        <h5>Resources</h5>
-        <ul class="list-unstyled text-small">
-          <li><a class="text-muted" href="#">Business</a></li>
-          <li><a class="text-muted" href="#">Education</a></li>
-          <li><a class="text-muted" href="#">Government</a></li>
-          <li><a class="text-muted" href="#">Gaming</a></li>
-        </ul>
-      </div>
-      <div class="col-6 col-md">
-        <h5>About</h5>
-        <ul class="list-unstyled text-small">
-          <li><a class="text-muted" href="#">Team</a></li>
-          <li><a class="text-muted" href="#">Locations</a></li>
-          <li><a class="text-muted" href="#">Privacy</a></li>
-          <li><a class="text-muted" href="#">Terms</a></li>
-        </ul>
-      </div>
-    </div>
-  </footer>
+
 
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
     integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
@@ -153,7 +142,7 @@
       const db = firebase.firestore();
 
       firebase.auth().onAuthStateChanged(function (user) {
-        document.getElementById('formUpdate').addEventListener('submit', async (e) => {
+          document.getElementById('btnSubmit').addEventListener('click', async (e) => {
 
           e.preventDefault()
           if (user) {
@@ -162,6 +151,11 @@
             const dbRef = db.collection('Users').doc(user.uid);
             const bio = document.getElementById('bio').value;
 
+            if(displayName==''){
+              return document.getElementById('auth').innerHTML = `<div class="alert alert-danger  mt-5" role="alert">nama tidak boleh kosong jika ingin mengupdate</div>`;
+
+            }
+
             await user.updateProfile({
               displayName: displayName
             })
@@ -169,11 +163,10 @@
               displayName: displayName,
               bio: bio
             }).then(() => {
-              //  document.getElementById('auth').innerHTML = `<div class="alert alert-success" role="alert">success</div>`;
               return window.location.href = './dashboard.html';
 
             }).catch(err => {
-              document.getElementById('auth').innerHTML = `<div class="alert alert-danger" role="alert">${err.message}</div>`;
+              document.getElementById('auth').innerHTML = `<div class="alert alert-danger mt-5" role="alert">update gagal</div>`;
             })
           }
         });
@@ -181,6 +174,11 @@
       })
 
     })
+      document.getElementById('cancelBtn').addEventListener('click',()=>{
+          window.location.href = './dashboard.html';
+
+
+      })
       document.getElementById('back').addEventListener('click', () => {
 
           window.location.href = './dashboard.html';
