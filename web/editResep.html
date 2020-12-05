@@ -123,7 +123,6 @@
             const slug = params.get('resep')
             const steps = document.getElementById('step')
             const deskripsi = document.getElementById('deskripsi')
-            const thumbnail = document.getElementById('Thumbnail')
             const body = document.getElementById('step')
             const judul = document.getElementById('judul')
             const db = firebase.firestore()
@@ -303,11 +302,11 @@
                     SetLoading(true)
 
                     if (document.getElementById('Thumbnail').files.length > 0) {
+                        const thumbnail = document.getElementById('Thumbnail').files[0]
                         const storageRef = firebase.storage().ref('ThumbnailResep').child(thumbnail.name);
                         await storageRef.put(thumbnail)
                         url = await storageRef.getDownloadURL()
                     }
-
                     return await db.collection('resep').doc(res.id).update({
                         thumbnail: url,
                         deskripsi: deskripsi.value,
@@ -317,8 +316,10 @@
                         judul: judul.value,
                         updated_at: firebase.firestore.FieldValue.serverTimestamp()
                     }).then(() => {
-                        db.collection('Data').doc('BuatSearch').update({
-                            listBahan: firebase.firestore.FieldValue.arrayUnion(bahan)
+                        bahan.forEach(bahanData => {
+                            db.collection('Data').doc('BuatSearch').update({
+                                listBahan: firebase.firestore.FieldValue.arrayUnion(bahanData)
+                            })
                         })
                         window.location.href = './dashboard.html'
                         return;
