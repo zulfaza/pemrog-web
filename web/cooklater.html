@@ -13,8 +13,14 @@
     <script defer src="/__/firebase/8.1.1/firebase-performance.js"></script>
     <script defer src="/__/firebase/init.js?useEmulator=false"></script>
     <title>Document</title>
+    <link rel="stylesheet" href="./css/global.css">
 </head>
 <body>
+    <div class="container">
+        <div id="resep">
+            
+        </div>
+    </div>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
     integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
     crossorigin="anonymous"></script>
@@ -22,7 +28,78 @@
     integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
     crossorigin="anonymous"></script>
     <script>
-        
+        document.addEventListener('DOMContentLoaded', function () {
+            const db=firebase.firestore()
+            firebase.auth().onAuthStateChanged(function (user) {
+
+            db.collection('Users').doc(user.uid)
+            .onSnapshot(snap=>{
+                const userDB = snap.data()
+
+                db.collection('resep')
+                    .get().then(function(snapshot) {
+                        let ListResep = ""
+                        snapshot.docs.forEach(doc=>{
+                            const data = doc.data()
+                            let button = ''
+                            if(userDB.listCookLater.includes(doc.id)){
+                                button = `<button type="button" class="btn btn-secondary btnHapus" data-resep="${doc.id}">Hapus</button>`
+                            }else{
+                                button = `<button type="button" class="btn btn-primary btnSave" data-resep="${doc.id}">Save</button>`
+                            }
+                            
+                            ListResep += `
+                                <div class="card" style="width: 18rem;">
+                                <img src="${data.thumbnail}" class="card-img-top" alt="${data.judul}">
+                                <div class="card-body">
+                                    <h5 class="card-title">${data.judul}</h5>
+                                    <p class="card-text">${data.pembuatResep.nama}</p>
+                                    ${button}
+                                </div>
+                                </div>
+                            `
+                        })
+    
+                        document.getElementById('resep').innerHTML = ListResep
+                        $('.btnSave').click((e)=>{
+                            const idResep = e.target.dataset.resep
+                            db.collection('Users')
+                            .doc(user.uid).update({
+                                listCookLater:firebase.firestore.FieldValue.arrayUnion(idResep)
+                            }).then(()=>{
+                                console.log('Berhasil disimpan');
+                                db.collection('resep').doc(idResep).update({
+                                    cookLaterCount:firebase.firestore.FieldValue.increment(1)
+                                }).then(()=>{console.log('berhasil')}).catch(err=>{console.log(err)})
+                            }).catch(err=>{
+                                console.log(err);
+                            })
+
+
+                        })
+                        $('.btnHapus').click((e)=>{
+                            const idResep = e.target.dataset.resep
+                            db.collection('Users')
+                            .doc(user.uid).update({
+                                listCookLater:firebase.firestore.FieldValue.arrayRemove(idResep)
+                            }).then(()=>{
+                                console.log('Berhasil disimpan');
+                                db.collection('resep').doc(idResep).update({
+                                    cookLaterCount:firebase.firestore.FieldValue.increment(-1)
+                                }).then(()=>{console.log('berhasil')}).catch(err=>{console.log(err)})
+                            }).catch(err=>{
+                                console.log(err);
+                            })
+                        })
+                    }).catch(err=>{
+                        console.log(err);
+                    });
+            })
+
+
+                });
+        })
+
     </script>
 </body>
 </html>
