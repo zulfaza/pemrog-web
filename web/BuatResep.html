@@ -329,9 +329,14 @@
                     let url = ''
 
                     if (document.getElementById('Thumbnail').files.length > 0) {
+                        // Verifikasi format jadi cuma nerima png sama jpg
+                        // Verifikasi jml maks 5mb
                         const storageRef = firebase.storage().ref('ThumbnailResep').child(thumbnail.name);
                         await storageRef.put(thumbnail)
-                        url = await storageRef.getDownloadURL()
+                        url = await storageRef.getDownloadURL().catch(err => {
+                            console.log(err);
+                            return;
+                        })
                     }
 
                     const resSubmitResep = await db.collection('resep').add({
