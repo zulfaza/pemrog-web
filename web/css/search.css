@@ -12,7 +12,10 @@ body {
   color: black;
   text-align: center;
 }
-
+.card h3,
+.card h5 {
+  text-transform: capitalize;
+}
 .card .imgThumb {
   border-radius: 20px;
   overflow: hidden;
@@ -26,6 +29,21 @@ body {
   width: 100%;
 }
 
-/* .search{
-
-} */
+li.ais-Hits-item {
+  list-style: none;
+}
+.ais-Hits-list {
+  margin-block-start: 0;
+  margin-block-end: 0;
+  margin-inline-start: 0px;
+  margin-inline-end: 0px;
+  padding-inline-start: 0px;
+}
+.btnWrapper .btn {
+  font-size: 26px;
+}
+nput.ais-SearchBox-input {
+  border: 1px solid grey;
+  padding: 10px 15px;
+  border-radius: 12px;
+}

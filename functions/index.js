@@ -28,7 +28,7 @@ app.post("/regis", async (req, res) => {
       ListResep: [],
       listCookLater: [],
       uid: uid,
-      bio:''
+      bio: "",
     })
     .then(() => {
       return res.json({ pesan: "berhasil membuat data" });
@@ -43,12 +43,21 @@ app.get("/coba", async (req, res) => {
   return db
     .collection("resep")
     .get()
-    .then((res) => {
+    .then((result) => {
       let arr = [];
-      res.docs.forEach((doc) => {
+      result.docs.forEach((doc) => {
         const data = doc.data();
         const objectID = doc.id;
-        arr.push({ ...data, objectID });
+        arr.push({
+          bahan: data.bahan,
+          cookLaterCount: data.cookLaterCount,
+          jmlBahan: data.jmlBahan,
+          judul: data.judul,
+          pembuatResep: data.pembuatResep,
+          thumbnail: data.thumbnail,
+          timestamp: data.timestamp,
+          objectID,
+        });
       });
       return index
         .saveObjects(arr)
@@ -66,25 +75,55 @@ app.post("/coba", (req, res) => {
 });
 exports.api = functions.region("asia-southeast2").https.onRequest(app);
 
-exports.addToIndex = functions.firestore
-  .document("resep/{resepId}")
+exports.addToIndex = functions
+  .region("asia-southeast2")
+  .firestore.document("resep/{resepId}")
   .onCreate((snapshot) => {
     const data = snapshot.data();
     const objectID = snapshot.id;
-    return index.saveObject({ ...data, objectID });
+    return index
+      .saveObject({
+        bahan: data.bahan,
+        cookLaterCount: data.cookLaterCount,
+        jmlBahan: data.jmlBahan,
+        judul: data.judul,
+        pembuatResep: data.pembuatResep,
+        thumbnail: data.thumbnail,
+        timestamp: data.timestamp,
+        objectID,
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   });
 
-exports.updateIndex = functions.firestore
-  .document("resep/{resepId}")
+exports.updateIndex = functions
+  .region("asia-southeast2")
+  .firestore.document("resep/{resepId}")
   .onUpdate((change) => {
     const newData = change.after.data();
-    const resepId = change.after.id;
-    return index.saveObject({ ...newData });
+    const objectID = change.after.id;
+    return index
+      .saveObject({
+        bahan: newData.bahan,
+        cookLaterCount: newData.cookLaterCount,
+        jmlBahan: newData.jmlBahan,
+        judul: newData.judul,
+        pembuatResep: newData.pembuatResep,
+        thumbnail: newData.thumbnail,
+        timestamp: newData.timestamp,
+        objectID,
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   });
 
-exports.deleteFromIndex = functions.firestore
-  .document("resep/{resepId}")
+exports.deleteFromIndex = functions
+  .region("asia-southeast2")
+  .firestore.document("resep/{resepId}")
   .onDelete((snapshot) => {
-    return index.deleteObject(snapshot.id);
-    x;
+    return index.deleteObject(snapshot.id).catch((err) => {
+      console.log(err);
+    });
   });

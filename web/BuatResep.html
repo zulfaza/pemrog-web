@@ -357,7 +357,12 @@
                         return;
                     });
 
+                    db.collection('Data').doc('BuatSearch').update({
+                        listBahan: firebase.firestore.FieldValue.arrayUnion(bahan)
+                    })
+
                     if (resSubmitResep) {
+
                         return await db.collection('Users').doc(user.uid).update({
                             ListResep: firebase.firestore.FieldValue.arrayUnion(resSubmitResep.id)
                         }).then(() => {

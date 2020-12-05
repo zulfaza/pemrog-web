@@ -317,6 +317,9 @@
                         judul: judul.value,
                         updated_at: firebase.firestore.FieldValue.serverTimestamp()
                     }).then(() => {
+                        db.collection('Data').doc('BuatSearch').update({
+                            listBahan: firebase.firestore.FieldValue.arrayUnion(bahan)
+                        })
                         window.location.href = './dashboard.html'
                         return;
                     })
