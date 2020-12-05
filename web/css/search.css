@@ -42,8 +42,9 @@ li.ais-Hits-item {
 .btnWrapper .btn {
   font-size: 26px;
 }
-nput.ais-SearchBox-input {
-  border: 1px solid grey;
-  padding: 10px 15px;
-  border-radius: 12px;
+#ListBahan {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
 }
