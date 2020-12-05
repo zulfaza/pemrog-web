@@ -41,7 +41,9 @@ body {
 .vh-25 {
   height: 25vh;
 }
-
+.vh-50 {
+  height: 50vh !important;
+}
 h1 {
   font-weight: bold;
 }
