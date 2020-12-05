@@ -87,7 +87,8 @@
                         const userDB = snap.data()
                         const client = algoliasearch('VC8WCMFUPU', '71f394aa7d0003076acb0364cbed31c8');
                         const index = client.initIndex('resep');
-
+                        const params = new URLSearchParams(window.location.search)
+                        const judulResep = params.get('resep')
                         await db.collection('Data').doc('BuatSearch').get().then(doc => {
                             const data = doc.data()
                             let ListBahan = ''
@@ -153,27 +154,32 @@
                                 })
                             })
                         })
-
-                        db.collection('resep').limit(5).get().then(snap => {
-                            let listCard = ''
-                            snap.docs.forEach(doc => {
-                                const item = doc.data()
-                                let varButton = ''
-                                if (userDB.listCookLater.includes(doc.id)) {
-                                    varButton = `
-                                            <button type="button" class="btn btn-hapusCookLater" data-id=${doc.id}>
-                                                <span class="fas fa-bookmark" data-id=${doc.id}></span>
+                        if (judulResep) {
+                            console.log(judulResep);
+                            const hasil = await index.search(judulResep.replace('+', " "), {
+                                facetFilters: [
+                                    BahanFilter
+                                ]
+                            }).then((res) => {
+                                const { hits } = res
+                                let listCard = ''
+                                hits.forEach(item => {
+                                    let varButton = ''
+                                    if (userDB.listCookLater.includes(item.objectID)) {
+                                        varButton = `
+                                            <button type="button" class="btn btn-hapusCookLater" data-id=${item.objectID}>
+                                                <span class="fas fa-bookmark" data-id=${item.objectID}></span>
                                             </button>
                                             `
-                                } else {
-                                    varButton = `
-                                            <button type="button" class="btn btn-TambahCookLater" data-id=${doc.id}>
-                                                <span class="far fa-bookmark" data-id=${doc.id}></span>
+                                    } else {
+                                        varButton = `
+                                            <button type="button" class="btn btn-TambahCookLater" data-id=${item.objectID}>
+                                                <span class="far fa-bookmark" data-id=${item.objectID}></span>
                                             </button>
                                             `
-                                }
-                                const { thumbnail, judul, pembuatResep, bahan } = item
-                                listCard += `
+                                    }
+                                    const { thumbnail, judul, pembuatResep, bahan } = item
+                                    listCard += `
                                                 <div class="card mb-3 p-4">
                                                     <div class="row">
                                                         <div class="col-md-4 mb-md-0 mb-3">
@@ -196,10 +202,61 @@
                                                     </div>
                                                 </div>
                                                 `
-                            })
-                            document.getElementById('hits').innerHTML = listCard
+                                });
+
+                                return listCard
+
+                            });
+                            document.getElementById('hits').innerHTML = hasil
                             addListener()
-                        })
+                        } else {
+                            db.collection('resep').limit(5).get().then(snap => {
+                                let listCard = ''
+                                snap.docs.forEach(doc => {
+                                    const item = doc.data()
+                                    let varButton = ''
+                                    if (userDB.listCookLater.includes(doc.id)) {
+                                        varButton = `
+                                                <button type="button" class="btn btn-hapusCookLater" data-id=${doc.id}>
+                                                    <span class="fas fa-bookmark" data-id=${doc.id}></span>
+                                                </button>
+                                                `
+                                    } else {
+                                        varButton = `
+                                                <button type="button" class="btn btn-TambahCookLater" data-id=${doc.id}>
+                                                    <span class="far fa-bookmark" data-id=${doc.id}></span>
+                                                </button>
+                                                `
+                                    }
+                                    const { thumbnail, judul, pembuatResep, bahan } = item
+                                    listCard += `
+                                                    <div class="card mb-3 p-4">
+                                                        <div class="row">
+                                                            <div class="col-md-4 mb-md-0 mb-3">
+                                                                <div class="imgThumb">
+                                                                    <img src="${thumbnail}" alt="${judul}">
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-8 text-left">
+                                                                <h3 class="font-weight-bold text-dark">${judul}</h3>
+                                                                <h5>Oleh ${pembuatResep.nama}</h5>
+                                                                <hr />
+                                                                <br />
+                                                                <p><b>Bahan</b> : ${bahan.length > 0 ? bahan.join(',') : bahan[0]}</p>
+                                                                <div class="btnWrapper">    
+                                                                    <a href="./resep.html?resep=${judul.replace(' ', '-')}" class="btn" target="_blank" rel="noopener noreferrer"><span class="far fa-comment"></span></a>
+                                                                    <button type="button" class="btn btnShare"><span class="fas fa-share-alt"></span></button>
+                                                                    ${varButton}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    `
+                                })
+                                document.getElementById('hits').innerHTML = listCard
+                                addListener()
+                            })
+                        }
 
                         document.getElementById('searchbox').addEventListener('change', async (e) => {
                             const hasil = await index.search(e.target.value, {
