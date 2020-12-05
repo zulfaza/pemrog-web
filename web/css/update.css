@@ -1,0 +1,38 @@
+
+body{
+
+  background: #FDF6F0;
+
+}
+.card {
+  background: #fdf6f0;
+  border: 5px solid #000000;
+  border-radius: 20px;
+  height: 530px;
+}
+.form-control {
+  border-color: black;
+}
+.custom-file-label {
+  border-color: black;
+}
+.custom-file-label::after {
+  background-color: var(--orange);
+  color: white;
+}
+.justify-content-end{
+  position: relative;
+
+}
+.judulUpdate{
+  position: absolute;
+  margin-top: 5px;
+  font-family: Montserrat;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 38px;
+  line-height: 15px;
+
+  color: #F57B51;
+
+}
