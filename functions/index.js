@@ -39,7 +39,7 @@ app.post("/regis", async (req, res) => {
     });
 });
 
-app.get("/coba", async (req, res) => {
+app.get("/AddToAlgolia", async (req, res) => {
   return db
     .collection("resep")
     .get()

@@ -4,6 +4,7 @@ $(document).scroll(function () {
     $(this).scrollTop() < $(".navbar").height()
   );
 });
+
 document.addEventListener("DOMContentLoaded", function () {
   const db = firebase.firestore();
   const dropdownWrapper = document.getElementById("dropdownWrapper");
@@ -164,7 +165,6 @@ document.addEventListener("DOMContentLoaded", function () {
         .get()
         .then((doc) => {
           const data = doc.data();
-          let ListBahan = "";
           var instance = $("#ListBahan").magicSuggest({
             data: data.listBahan,
             allowFreeEntries: false,
@@ -177,7 +177,11 @@ document.addEventListener("DOMContentLoaded", function () {
             Search("");
           });
         });
-      Search("");
+      if (judulResep) {
+        Search(judulResep.replace("+", " "), userDB.listCookLater);
+      } else {
+        Search("");
+      }
     } else {
       dropdownWrapper.innerHTML = `
             <a class="dropdown-item" href = "./dashboard.html" >Dashboard</a >
@@ -228,7 +232,6 @@ document.addEventListener("DOMContentLoaded", function () {
               .limit(5)
               .get()
               .then((snap) => {
-                let listCard = "";
                 RenderReseps(snap.docs, userDB.listCookLater, "firebase");
               });
           }
