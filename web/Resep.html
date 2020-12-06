@@ -17,8 +17,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap" rel="stylesheet">
   <script src="https://kit.fontawesome.com/cb61666d8f.js" crossorigin="anonymous"></script>
   <!-- CSS -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
-    integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
   <link rel="stylesheet" href="./css/global.css">
   <link rel="stylesheet" href="./css/resep.css">
 </head>
@@ -28,8 +27,7 @@
   <nav class="navbar navbar-expand-lg navbar-light navbar-orange">
     <div class="container">
       <a class="navbar-brand font-weight-bold" href="/">dailycious</a>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
 
@@ -44,8 +42,7 @@
             </a>
           </li>
           <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
-              data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               <span class="fas fa-cog"></span>
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink" id="dropdownWrapper">
@@ -65,25 +62,20 @@
 
   </div>
 
-  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
-    integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
-    crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
-    crossorigin="anonymous"></script>
-  <script src="https://cdn.tiny.cloud/1/emahnh5u9va59zls67qf1ue25ridax44s0sr7kiowxxsuis0/tinymce/5/tinymce.min.js"
-    referrerpolicy="origin"></script>
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
+  <script src="https://cdn.tiny.cloud/1/emahnh5u9va59zls67qf1ue25ridax44s0sr7kiowxxsuis0/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
   <script>
-    document.addEventListener('DOMContentLoaded', async function () {
+    document.addEventListener('DOMContentLoaded', async function() {
       const params = new URLSearchParams(window.location.search)
       const slug = params.get('resep')
       const db = firebase.firestore();
-      firebase.auth().onAuthStateChanged(async function (user) {
+      firebase.auth().onAuthStateChanged(async function(user) {
         const dropdownWrapper = document.getElementById('dropdownWrapper')
         let isAdmin = false
         if (user) {
           const claims = (await user.getIdTokenResult()).claims
-          isAdmin = claims.admin ?? false
+          isAdmin = claims.admin ? true : false
           dropdownWrapper.innerHTML = `
             <a class="dropdown-item" href = "./dashboard.html" >Dashboard</a >
             <a class="dropdown-item" href="./update.html">Update Profile</a>
@@ -93,9 +85,9 @@
           `
           document.getElementById('logout').addEventListener('click', (e) => {
             e.preventDefault();
-            return firebase.auth().signOut().then(function () {
+            return firebase.auth().signOut().then(function() {
               window.location.href = './Login.html'
-            }).catch(function (error) {
+            }).catch(function(error) {
               console.log(error);
             });
 
@@ -108,9 +100,9 @@
         }
         document.getElementById('logout').addEventListener('click', (e) => {
           e.preventDefault();
-          return firebase.auth().signOut().then(function () {
+          return firebase.auth().signOut().then(function() {
             window.location.href = './Login.html'
-          }).catch(function (error) {
+          }).catch(function(error) {
             console.log(error);
           });
 
@@ -128,9 +120,7 @@
         } else {
           document.getElementById('container').innerHTML = `
           <div id="header" class="text-center">
-
           </div>
-
           <div class="d-flex justify-content-center">
             <div class="tombol">
               <a href="#ListKomentar" class="btn">
@@ -157,14 +147,10 @@
               </button>
             </div>
           </div>
-
           <div class="card my-3">
             <div class="card-body" id="resepDoc">
-
             </div>
           </div>
-
-
           <h4 class="font-weight-bold">Tulis Komentar</h4>
           <form id="formUpdate">
             <div class="card my-3">
@@ -181,6 +167,9 @@
           <h4 class="font-weight-bold">Tulis Komentar</h4>
           <div class="card mb-3">
             <div class="card-body">
+            <div class="text-right">
+                <button class="btn btn-danger font-weight-bold">Hapus</button>
+            </div>
               <code id="ListKomentar">
 
               </code>
@@ -194,7 +183,16 @@
           });
         }
         const res = resQuery.docs[0]
-        const { judul, body, bahan, jmlBahan, pembuatResep, timestamp, deskripsi, thumbnail } = res.data()
+        const {
+          judul,
+          body,
+          bahan,
+          jmlBahan,
+          pembuatResep,
+          timestamp,
+          deskripsi,
+          thumbnail
+        } = res.data()
         const KomenRef = db.collection("resep").doc(res.id).collection('komen')
         document.title = judul + " | Dailycious"
         let listBahan = '';
@@ -219,7 +217,6 @@
           <div class="thumbnail">
             ${thumb}
           </div>
-
         ${deskripsi}
         `
         document.getElementById('header').innerHTML = header
@@ -233,7 +230,10 @@
             users[doc.id] = doc.data()
           })
           res.docs.forEach(doc => {
-            const { uid_sender, komen } = doc.data()
+            const {
+              uid_sender,
+              komen
+            } = doc.data()
             finalData += `
             <div class="row komen-item mb-3">
               <div class="col-1 profile">
@@ -255,7 +255,9 @@
             document.getElementById('ListKomentar').innerHTML = 'Belum ada komentar'
           }
           $('.btnHapusKomen').click(async e => {
-            const { docid } = e.target.dataset
+            const {
+              docid
+            } = e.target.dataset
             e.target.innerHTML = `<div class="spinner-border spinner-border-sm" role="status"></div>`
             e.target.setAttribute('disabled', '')
             KomenRef.doc(docid).delete().catch(err => {
@@ -275,6 +277,22 @@
           }).catch(err => {
             console.log(err);
           })
+        });
+
+        document.getElementById('formDelete').addEventListener('submit', async (req, res) => {
+          const hapusKomen = document.getElementById('ListKomentar').value;
+          const listKomen = db.collection('resep').doc('S2lZZjx972koIXcfHVhD').collection('komen').onSnapshot(async (res) => {
+            let komentar = ' '
+            res.docs.forEach(doc => {
+              const data = doc.data()
+              komentar += `<button type="button" class="btn btn-danger" data-id="${doc.id}> X </button>`
+            })
+            document.getElementById('ListKomentar').innerHTML = komentar
+          })
+          const cityRef = db.collection('resep').doc(user.id).collection('komen').doc(user.id).delete()
+            .then(() => {
+              return;
+            })
         });
 
       })
