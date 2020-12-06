@@ -54,7 +54,17 @@ label {
 .bg-yellow {
   background: var(--yellow);
 }
+@media (min-width: 576px) {
+}
 
-.bg-transparant {
-  background: transparent !important;
+@media (min-width: 768px) {
+}
+
+@media (min-width: 992px) {
+  .bg-transparant {
+    background: transparent !important;
+  }
+}
+
+@media (min-width: 1200px) {
 }

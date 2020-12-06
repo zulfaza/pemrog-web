@@ -117,9 +117,19 @@
         referrerpolicy="origin"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
+
             let bahan = ['']
             let jmlBahan = ['']
             UpdateBahan()
+            document.getElementById('logout').addEventListener('click', (e) => {
+                e.preventDefault();
+                return firebase.auth().signOut().then(function () {
+                    window.location.href = './Login.html'
+                }).catch(function (error) {
+                    console.log(error);
+                });
+
+            })
             function AddBahan() {
                 bahan.push('')
                 jmlBahan.push('')
