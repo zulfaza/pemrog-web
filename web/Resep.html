@@ -12,10 +12,6 @@
   <script defer src="/__/firebase/8.1.1/firebase-analytics.js"></script>
   <script defer src="/__/firebase/8.1.1/firebase-performance.js"></script>
   <script defer src="/__/firebase/init.js?useEmulator=false"></script>
-  <!-- Share Button -->
-  <script type="text/javascript"
-    src="https://platform-api.sharethis.com/js/sharethis.js#property=5fcdaef9273a4a0013a723db&product=inline-share-buttons"
-    async="async"></script>
   <!-- Font -->
   <link rel="preconnect" href="https://fonts.gstatic.com">
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap" rel="stylesheet">
@@ -69,21 +65,19 @@
 
   </div>
   <!-- Modal -->
-  <div class="modal fade" id="shareModal" tabindex="-1" aria-labelledby="shareModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+  <div class="modal fade" id="ModalLogin" tabindex="-1" aria-labelledby="ModalLoginLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
         <div class="modal-body">
-          <div class="sharethis-inline-share-buttons"></div>
+          Kamu harus masuk terlebih dahulu untuk menyimpan resep ini
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <a href="./Login.html" class="btn btn-orange">Masuk</a>
         </div>
       </div>
     </div>
   </div>
-
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
     integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
     crossorigin="anonymous"></script>
@@ -117,7 +111,6 @@
             }).catch(function (error) {
               console.log(error);
             });
-
           })
         } else {
           dropdownWrapper.innerHTML = `
@@ -137,65 +130,125 @@
           </div>`
           return
         } else {
-          document.getElementById('container').innerHTML = `
-          <div id="header" class="text-center">
-          </div>
-          <div class="d-flex justify-content-center">
-            <div class="tombol">
-              <a href="#ListKomentar" class="btn">
-                <span class="icon">
-                  <i class="far fa-comment"></i>
-                </span>
-                <span>Komentar</span>
-              </a>
-            </div>
-            <div class="tombol">
-              <button class="btn" data-toggle="modal" data-target="#shareModal">
-                <span class="icon">
-                  <i class="fas fa-share-alt"></i>
-                </span>
-                <span>Bagikan</span>
-              </button>
-            </div>
-            <div class="tombol">
-              <button class="btn">
-                <span class="icon">
-                  <i class="far fa-bookmark"></i>
-                </span>
-                <span>Simpan</span>
-              </button>
-            </div>
-          </div>
-          <div class="card my-3">
-            <div class="card-body" id="resepDoc">
-            </div>
-          </div>
-          <h4 class="font-weight-bold">Tulis Komentar</h4>
-          <form id="formUpdate">
-            <div class="card my-3">
-              <div class="card-body">
-                <div class="form-group">
-                  <textarea class="form-control" placeholder="Masukkan Komentar" id="newKomen" rows="7  "></textarea>
+
+          function RenderContainer() {
+            document.getElementById('container').innerHTML = `
+              <div id="header" class="text-center">
+              </div>
+              <div class="d-flex justify-content-center" id="listBtn">
+              </div>
+              <div class="card my-3">
+                <div class="card-body" id="resepDoc">
                 </div>
               </div>
-            </div>
-            <div class="text-right">
-              <button class="btn btn-black font-weight-bold">Komentar</button>
-            </div>
-          </form>
-          <h4 class="font-weight-bold">Tulis Komentar</h4>
-          <div class="card mb-3">
-            <div class="card-body" id="ListKomentar">
+              <h4 class="font-weight-bold">Tulis Komentar</h4>
+              <form id="formUpdate">
+                <div class="card my-3">
+                  <div class="card-body">
+                    <div class="form-group">
+                      <textarea class="form-control" placeholder="Masukkan Komentar" id="newKomen" rows="7  "></textarea>
+                    </div>
+                  </div>
+                </div>
+                <div class="text-right">
+                  <button class="btn btn-black font-weight-bold">Komentar</button>
+                </div>
+              </form>
+              <h4 class="font-weight-bold">Tulis Komentar</h4>
+              <div class="card mb-3">
+                <div class="card-body" id="ListKomentar">
 
-            </div>
-          </div>
-          `
+                </div>
+              </div>
+              `
+          }
+
+          function renderListBtn(btn) {
+            document.getElementById('listBtn').innerHTML = btn
+          }
+
+          if (user) {
+            const UseDocRef = db.collection('Users').doc(user.uid)
+            await UseDocRef.onSnapshot(doc => {
+              let btn = `
+                <div class="tombol">
+                  <a href="#ListKomentar" class="btn">
+                    <span class="icon">
+                      <i class="far fa-comment"></i>
+                    </span>
+                    <span>Komentar</span>
+                  </a>
+                </div>
+              `
+              if (doc.data().listCookLater.includes(res.id)) {
+                btn += `
+                <div class="tombol">
+                  <button class="btn btnHapusCooklater" data-resepId="${resQuery.docs[0].id}" >
+                    <span class="icon" data-resepId="${resQuery.docs[0].id}">
+                      <i class="fas fa-bookmark" data-resepId="${resQuery.docs[0].id}"></i>
+                    </span>
+                    <span data-resepId="${resQuery.docs[0].id}" >Tersimpan</span>
+                  </button>
+                </div>
+                  `
+                renderListBtn(btn)
+                $('.btnHapusCooklater').click(e => {
+                  const resepId = e.target.dataset.resepid
+                  UseDocRef.update({
+                    listCookLater: firebase.firestore.FieldValue.arrayRemove(resepId)
+                  })
+                })
+
+              } else {
+                btn += `
+                <div class="tombol">
+                  <button class="btn btnSimpanCooklater" data-resepId="${resQuery.docs[0].id}" >
+                    <span class="icon" data-resepId="${resQuery.docs[0].id}">
+                      <i class="far fa-bookmark" data-resepId="${resQuery.docs[0].id}"></i>
+                    </span>
+                    <span data-resepId="${resQuery.docs[0].id}" >Simpan</span>
+                  </button>
+                </div>`
+                renderListBtn(btn)
+                $('.btnSimpanCooklater').click(e => {
+                  const resepId = e.target.dataset.resepid
+                  UseDocRef.update({
+                    listCookLater: firebase.firestore.FieldValue.arrayUnion(resepId)
+                  })
+                })
+              }
+
+            });
+          } else {
+            const btn = `
+                <div class="tombol">
+                  <a href="#ListKomentar" class="btn">
+                    <span class="icon">
+                      <i class="far fa-comment"></i>
+                    </span>
+                    <span>Komentar</span>
+                  </a>
+                </div>
+                <div class="tombol">  
+                  <button class="btn btnSimpan" data-toggle="modal" data-target="#ModalLogin" >
+                    <span class="icon">
+                      <i class="far fa-bookmark"></i>
+                    </span>
+                    <span >Simpan</span>
+                  </button>
+                </div>
+                `
+            renderListBtn(btn)
+          }
+
+          RenderContainer();
           tinymce.init({
             selector: 'textarea',
             menubar: false,
             branding: false
           });
         }
+
         const res = resQuery.docs[0]
         const {
           judul,
