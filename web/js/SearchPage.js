@@ -72,20 +72,13 @@ document.addEventListener("DOMContentLoaded", function () {
       });
     }
 
-    function RenderReseps(data, arrCookLaterList, type) {
+    function RenderReseps(data, arrCookLaterList) {
       let listCard = "";
       data.forEach((doc) => {
-        let item = "";
-        let id = "";
-        if (type === "algolia") {
-          item = doc;
-          id = doc.objectID;
-        } else {
-          item = doc.data();
-          id = doc.id;
-        }
-
+        let item = doc;
+        let id = doc.objectID;
         let varButton = "";
+
         if (!user) {
           varButton = `
                 <button type="button" class="btn btn-BelumLogin" data-id=${id} data-toggle="modal" data-target="#ModalLogin">
@@ -157,7 +150,7 @@ document.addEventListener("DOMContentLoaded", function () {
         })
         .then((res) => {
           const { hits } = res;
-          RenderReseps(hits, arrCookLaterList, "algolia");
+          RenderReseps(hits, arrCookLaterList);
         });
     }
 
@@ -235,14 +228,8 @@ document.addEventListener("DOMContentLoaded", function () {
           if (judulResep) {
             Search(judulResep.replace("+", " "), userDB.listCookLater);
           } else {
-            db.collection("resep")
-              .limit(5)
-              .get()
-              .then((snap) => {
-                RenderReseps(snap.docs, userDB.listCookLater, "firebase");
-              });
+            Search("", userDB.listCookLater);
           }
-
           document
             .getElementById("searchbox")
             .addEventListener("change", (e) => {
