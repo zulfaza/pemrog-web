@@ -111,11 +111,21 @@ document.addEventListener("DOMContentLoaded", function () {
                     <div class="row">
                         <div class="col-md-4 mb-md-0 mb-3">
                             <div class="imgThumb">
+                              <a href="./Resep.html?resep=${judul.replace(
+                                " ",
+                                "-"
+                              )}" >
                                 <img src="${thumbnail}" alt="${judul}">
+                              </a>    
                             </div>
                         </div>
                         <div class="col-md-8 text-left">
-                            <h3 class="font-weight-bold text-dark">${judul}</h3>
+                            <a href="./Resep.html?resep=${judul.replace(
+                              " ",
+                              "-"
+                            )}" >
+                              <h3 class="font-weight-bold text-dark">${judul}</h3>
+                            </a> 
                             <h5>Oleh ${pembuatResep.nama}</h5>
                             <hr />
                             <br />
@@ -123,7 +133,7 @@ document.addEventListener("DOMContentLoaded", function () {
                               bahan.length > 0 ? bahan.join(",") : bahan[0]
                             }</p>
                             <div class="btnWrapper">    
-                                <a href="./resep.html?resep=${judul.replace(
+                                <a href="./Resep.html?resep=${judul.replace(
                                   " ",
                                   "-"
                                 )}" class="btn">
