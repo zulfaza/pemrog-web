@@ -137,7 +137,6 @@
         const url = window.location.href
         let text = "Cobalah resep ini sekarang juga! "
         text = text.replace(/\s/ig, '%20')
-        console.log(text);
         document.getElementById('btnFacebook').href += url
         document.getElementById('btnTwitter').href += text + '&url=' + url
         document.getElementById('btnWA').href += text + url

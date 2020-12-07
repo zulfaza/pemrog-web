@@ -41,7 +41,7 @@
                 </ul>
                 <ul class="navbar-nav">
                     <li class="nav-item">
-                        <a class="nav-link" href="./search.html" alt='search'>
+                        <a class="nav-link" href="./search.html" alt="search">
                             <span class="fas fa-search"></span>
                         </a>
                     </li>
@@ -138,6 +138,8 @@
             let bahan = ['']
             let jmlBahan = ['']
 
+            const params = new URLSearchParams(window.location.search)
+            const slug = params.get('resep')
             const resepRef = db.collection("resep").where("judul", "==", slug.replace('-', ' '))
             const resQuery = await resepRef.limit(1).get()
             const res = resQuery.docs[0]
@@ -217,10 +219,11 @@
                 document.getElementById('bahanWrapper').innerHTML = listBahan
                 bahan.forEach((data, i) => {
 
-                    document.getElementById(`jmlBahan_${i}`).addEventListener('change', e => {
+                    document.getElementById(`jmlBahan_${i}`).addEventListener('keyup', e => {
+                        if (e.keyCode !== 13) {
                         const { index } = e.target.dataset
                         jmlBahan[index] = e.target.value
-                        console.log(jmlBahan);
+                        }
                     })
                     document.getElementById(`jmlBahan_${i}`).addEventListener('keydown', (e) => {
                         if (e.keyCode === 13) {
@@ -228,10 +231,11 @@
                             AddBahan()
                         }
                     })
-                    document.getElementById(`namaBahan_${i}`).addEventListener('change', (e) => {
+                    document.getElementById(`namaBahan_${i}`).addEventListener('keyup', (e) => {
+                        if (e.keyCode !== 13) {
                         const { index } = e.target.dataset
                         bahan[index] = e.target.value
-                        console.log(bahan);
+                        }
                     })
                     document.getElementById(`namaBahan_${i}`).addEventListener('keydown', (e) => {
                         if (e.keyCode === 13) {
@@ -242,6 +246,8 @@
                     if (i !== 0) {
                         document.getElementById(`BtnHapus_${i}`).addEventListener('click', (e) => {
                             const { index } = e.target.dataset
+                            bahan.pop()
+                            jmlBahan.pop()
                             DeleteBahan(index)
                         })
                     }
