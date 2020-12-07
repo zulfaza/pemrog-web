@@ -125,15 +125,7 @@
             <a class="dropdown-item" href="./Register.html">Regis</a>
           `
         }
-        document.getElementById('logout').addEventListener('click', (e) => {
-          e.preventDefault();
-          return firebase.auth().signOut().then(function () {
-            window.location.href = './Login.html'
-          }).catch(function (error) {
-            console.log(error);
-          });
 
-        })
         const resepRef = db.collection("resep").where("judul", "==", slug.replace('-', ' '))
         const resQuery = await resepRef.limit(1).get()
         if (resQuery.empty) {
@@ -193,13 +185,8 @@
           </form>
           <h4 class="font-weight-bold">Tulis Komentar</h4>
           <div class="card mb-3">
-            <div class="card-body">
-            <div class="text-right">
-                <button class="btn btn-danger font-weight-bold">Hapus</button>
-            </div>
-              <code id="ListKomentar">
+            <div class="card-body" id="ListKomentar">
 
-              </code>
             </div>
           </div>
           `
@@ -271,26 +258,26 @@
                   ${komen}
               </div>
               <div class="col-1">
-                ${user.uid === uid_sender || isAdmin ? `<button type="button" class="btn py-0 px-2 btn-danger font-weight-bold btnHapusKomen" data-docid=${doc.id} >X</button>` : ''}
+                ${(user && user.uid === uid_sender) || isAdmin ? `<button type="button" class="btn py-0 px-2 btn-danger font-weight-bold btnHapusKomen" data-docid=${doc.id} >X</button>` : ''}
               </div>
           </div>
             `
           })
           if (!res.empty) {
             document.getElementById('ListKomentar').innerHTML = finalData
+
+            $('.btnHapusKomen').click(async e => {
+              const { docid } = e.target.dataset
+              e.target.innerHTML = `<div class="spinner-border spinner-border-sm" role="status"></div>`
+              e.target.setAttribute('disabled', '')
+              KomenRef.doc(docid).delete().catch(err => {
+                console.log(err);
+              })
+            })
+
           } else {
             document.getElementById('ListKomentar').innerHTML = 'Belum ada komentar'
           }
-          $('.btnHapusKomen').click(async e => {
-            const {
-              docid
-            } = e.target.dataset
-            e.target.innerHTML = `<div class="spinner-border spinner-border-sm" role="status"></div>`
-            e.target.setAttribute('disabled', '')
-            KomenRef.doc(docid).delete().catch(err => {
-              console.log(err);
-            })
-          })
         })
 
 
@@ -301,24 +288,12 @@
             komen: newKomen,
             uid_sender: user.uid,
             timestamp: firebase.firestore.FieldValue.serverTimestamp()
-          }).catch(err => {
-            console.log(err);
           })
-        });
-
-        document.getElementById('formDelete').addEventListener('submit', async (req, res) => {
-          const hapusKomen = document.getElementById('ListKomentar').value;
-          const listKomen = db.collection('resep').doc('S2lZZjx972koIXcfHVhD').collection('komen').onSnapshot(async (res) => {
-            let komentar = ' '
-            res.docs.forEach(doc => {
-              const data = doc.data()
-              komentar += `<button type="button" class="btn btn-danger" data-id="${doc.id}> X </button>`
-            })
-            document.getElementById('ListKomentar').innerHTML = komentar
-          })
-          const cityRef = db.collection('resep').doc(user.id).collection('komen').doc(user.id).delete()
             .then(() => {
-              return;
+              document.getElementById('newKomen').value = ''
+            })
+            .catch(err => {
+              console.log(err);
             })
         });
 
