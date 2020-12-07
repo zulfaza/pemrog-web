@@ -74,6 +74,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function RenderReseps(data, arrCookLaterList) {
       let listCard = "";
+      if (data.length < 1) {
+        listCard += `
+        <div class="card mb-3 p-4">
+            <h4>Resep yang kamu cari tidak ada </h4>
+        </div>
+        `;
+      }
       data.forEach((doc) => {
         let item = doc;
         let id = doc.objectID;
@@ -104,7 +111,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         <div class="col-md-4 mb-md-0 mb-3">
                             <div class="imgThumb">
                               <a href="./Resep.html?resep=${judul.replace(
-                                " ",
+                                /\s/g,
                                 "-"
                               )}" >
                                 <img src="${thumbnail}" alt="${judul}">
@@ -113,7 +120,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         </div>
                         <div class="col-md-8 text-left">
                             <a href="./Resep.html?resep=${judul.replace(
-                              " ",
+                              /\s/g,
                               "-"
                             )}" >
                               <h3 class="font-weight-bold text-dark">${judul}</h3>
@@ -126,7 +133,7 @@ document.addEventListener("DOMContentLoaded", function () {
                             }</p>
                             <div class="btnWrapper">    
                                 <a href="./Resep.html?resep=${judul.replace(
-                                  " ",
+                                  /\s/g,
                                   "-"
                                 )}" class="btn">
                                 <span class="far fa-comment"></span>
@@ -177,7 +184,8 @@ document.addEventListener("DOMContentLoaded", function () {
           });
         });
       if (judulResep) {
-        Search(judulResep.replace("+", " "));
+        console.log(judulResep.replace(/\+/g, " "));
+        Search(judulResep.replace(/\+/g, " "));
       } else {
         Search("");
       }
@@ -228,7 +236,8 @@ document.addEventListener("DOMContentLoaded", function () {
               });
             });
           if (judulResep) {
-            Search(judulResep.replace("+", " "), userDB.listCookLater);
+            console.log(judulResep.replace(/\+/g, " "));
+            Search(judulResep.replace(/\+/g, " "), userDB.listCookLater);
           } else {
             Search("", userDB.listCookLater);
           }

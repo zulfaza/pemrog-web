@@ -138,9 +138,7 @@
             let bahan = ['']
             let jmlBahan = ['']
 
-            const params = new URLSearchParams(window.location.search)
-            const slug = params.get('resep')
-            const resepRef = db.collection("resep").where("judul", "==", slug.replace('-', ' '))
+            const resepRef = db.collection("resep").where("judul", "==", slug.replace(/-/g, ' '))
             const resQuery = await resepRef.limit(1).get()
             const res = resQuery.docs[0]
 

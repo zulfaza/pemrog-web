@@ -128,9 +128,9 @@
             listResep += `
             <div class="resepItem mr-md-3">
             <div class="thumbnail">
-              <a href="./Resep.html?resep=${data.judul.replace(' ', '-')}">${thumbnail}</a>
+              <a href="./Resep.html?resep=${data.judul.replace(/\s/g, '-')}">${thumbnail}</a>
             </div>
-            <a href="./Resep.html?resep=${data.judul.replace(' ', '-')}">
+            <a href="./Resep.html?resep=${data.judul.replace(/\s/g, '-')}">
               <h4 class="judul">${data.judul}</h4>
             </a>
             <p class="keterangan">${data.pembuatResep.nama}</p>
