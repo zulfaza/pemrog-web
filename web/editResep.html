@@ -138,7 +138,7 @@
             let bahan = ['']
             let jmlBahan = ['']
 
-            const resepRef = db.collection("resep").where("judul", "==", slug.replace('-', ' '))
+            const resepRef = db.collection("resep").where("judul", "==", slug.replace(/-/g, ' '))
             const resQuery = await resepRef.limit(1).get()
             const res = resQuery.docs[0]
 
