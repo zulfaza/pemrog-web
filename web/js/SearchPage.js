@@ -78,7 +78,6 @@ document.addEventListener("DOMContentLoaded", function () {
         let item = doc;
         let id = doc.objectID;
         let varButton = "";
-
         if (!user) {
           varButton = `
                 <button type="button" class="btn btn-BelumLogin" data-id=${id} data-toggle="modal" data-target="#ModalLogin">
@@ -178,10 +177,13 @@ document.addEventListener("DOMContentLoaded", function () {
           });
         });
       if (judulResep) {
-        Search(judulResep.replace("+", " "), userDB.listCookLater);
+        Search(judulResep.replace("+", " "));
       } else {
         Search("");
       }
+      document.getElementById("searchbox").addEventListener("change", (e) => {
+        Search(e.target.value);
+      });
     } else {
       dropdownWrapper.innerHTML = `
             <a class="dropdown-item" href = "./dashboard.html" >Dashboard</a >
