@@ -190,8 +190,8 @@
                 bahan.forEach((data, i) => {
                     document.getElementById(`jmlBahan_${i}`).addEventListener('keyup', e => {
                         if (e.keyCode !== 13) {
-                        const { index } = e.target.dataset
-                        jmlBahan[index] = e.target.value
+                            const { index } = e.target.dataset
+                            jmlBahan[index] = e.target.value
                         }
                     })
                     document.getElementById(`jmlBahan_${i}`).addEventListener('keydown', (e) => {
@@ -202,8 +202,8 @@
                     })
                     document.getElementById(`namaBahan_${i}`).addEventListener('keyup', (e) => {
                         if (e.keyCode !== 13) {
-                        const { index } = e.target.dataset
-                        bahan[index] = e.target.value
+                            const { index } = e.target.dataset
+                            bahan[index] = e.target.value
                         }
                     })
                     document.getElementById(`namaBahan_${i}`).addEventListener('keydown', (e) => {
@@ -367,9 +367,12 @@
                         return;
                     });
 
-                    db.collection('Data').doc('BuatSearch').update({
-                        listBahan: firebase.firestore.FieldValue.arrayUnion(bahan)
+                    bahan.forEach(bahanItem => {
+                        db.collection('Data').doc('BuatSearch').update({
+                            listBahan: firebase.firestore.FieldValue.arrayUnion(bahanItem)
+                        })
                     })
+
 
                     if (resSubmitResep) {
 
