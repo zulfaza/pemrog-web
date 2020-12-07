@@ -68,7 +68,22 @@
     </div>
 
   </div>
-  <div class="sharethis-inline-share-buttons"></div>
+  <!-- Modal -->
+  <div class="modal fade" id="shareModal" tabindex="-1" aria-labelledby="shareModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="sharethis-inline-share-buttons"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
     integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
     crossorigin="anonymous"></script>
@@ -143,7 +158,7 @@
               </a>
             </div>
             <div class="tombol">
-              <button class="btn">
+              <button class="btn" data-toggle="modal" data-target="#shareModal">
                 <span class="icon">
                   <i class="fas fa-share-alt"></i>
                 </span>

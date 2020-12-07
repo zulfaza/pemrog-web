@@ -139,9 +139,6 @@ document.addEventListener("DOMContentLoaded", function () {
                                 )}" class="btn">
                                 <span class="far fa-comment"></span>
                                 </a>
-                                <button type="button" class="btn btnShare">
-                                    <span class="fas fa-share-alt"></span>
-                                </button>
                                 ${varButton}
                             </div>
                         </div>
